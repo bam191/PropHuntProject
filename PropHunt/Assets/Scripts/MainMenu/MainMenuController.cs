@@ -5,21 +5,36 @@ using UnityEngine.UI;
 
 public class MainMenuController : MonoBehaviour
 {
-    private enum eMainMenuState
+    public enum eMainMenuState
     {
         MainMenu,
         ConnectionPopup,
-        SettingsPopup
+        SettingsPopup,
+        None
+    }
+
+    private static MainMenuController _instance;
+    public static MainMenuController Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = GameObject.FindObjectOfType<MainMenuController>(true);
+            }
+
+            return _instance;
+        }
     }
 
     [SerializeField] private Button _serverBrowserButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
-    private eMainMenuState _currentState;
+    private eMainMenuState _currentState = eMainMenuState.None;
 
-    private IPopup _connectionPopup;
-    private IPopup _settingsPopup;
+    private Popup _connectionPopup;
+    private Popup _settingsPopup;
 
     private void Awake()
     {
@@ -29,15 +44,15 @@ public class MainMenuController : MonoBehaviour
         SetState(eMainMenuState.MainMenu);
     }
 
-    private void SetState(eMainMenuState state)
+    public void SetState(eMainMenuState state)
     {
         if (_currentState == state) return;
-        
+
         EnableButtons(false);
         _connectionPopup.Hide();
         _settingsPopup.Hide();
 
-        switch(state)
+        switch (state)
         {
             case eMainMenuState.MainMenu:
                 EnableButtons(true);
@@ -53,6 +68,11 @@ public class MainMenuController : MonoBehaviour
         _currentState = state;
     }
 
+    public void SetState(int state)
+    {
+        SetState((eMainMenuState)state);
+    }
+
     private void EnableButtons(bool enabled)
     {
         _serverBrowserButton.interactable = enabled;
@@ -60,17 +80,17 @@ public class MainMenuController : MonoBehaviour
         _quitButton.interactable = enabled;
     }
 
-    private void OnServerBrowserButtonPressed()
+    public void OnServerBrowserButtonPressed()
     {
-        _connectionPopup.Show();
+        SetState(eMainMenuState.ConnectionPopup);
     }
 
-    private void OnSettingsButtonPressed()
+    public void OnSettingsButtonPressed()
     {
-        _settingsPopup.Show();
+        SetState(eMainMenuState.SettingsPopup);
     }
 
-    private void OnQuitButtonPressed()
+    public void OnQuitButtonPressed()
     {
         Application.Quit();
     }
