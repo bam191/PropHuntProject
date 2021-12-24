@@ -11,11 +11,6 @@ public class SettingsPopup : Popup
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<SettingsPopup>(true);
-            }
-
             return _instance;
         }
     }
@@ -29,7 +24,11 @@ public class SettingsPopup : Popup
 
     private void Awake()
     {
-        if (_instance != this)
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else
         {
             Destroy(gameObject);
             return;

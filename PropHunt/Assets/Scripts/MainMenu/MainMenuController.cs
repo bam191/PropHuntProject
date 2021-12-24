@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenuController : Singleton<MainMenuController>
 {
     public enum eMainMenuState
     {
@@ -13,34 +13,16 @@ public class MainMenuController : MonoBehaviour
         None
     }
 
-    private static MainMenuController _instance;
-    public static MainMenuController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<MainMenuController>(true);
-            }
-
-            return _instance;
-        }
-    }
-
     [SerializeField] private Button _serverBrowserButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
     private eMainMenuState _currentState = eMainMenuState.None;
 
-    private Popup _connectionPopup;
-    private Popup _settingsPopup;
-
     private void Awake()
     {
-        _connectionPopup = ConnectionPopup.Instance;
-        _settingsPopup = SettingsPopup.Instance;
-        
+        SetInstance(this);
+
         SetState(eMainMenuState.MainMenu);
     }
 
@@ -49,8 +31,8 @@ public class MainMenuController : MonoBehaviour
         if (_currentState == state) return;
 
         EnableButtons(false);
-        _connectionPopup.Hide();
-        _settingsPopup.Hide();
+        ConnectionPopup.Instance.Hide();
+        SettingsPopup.Instance.Hide();
 
         switch (state)
         {
@@ -58,10 +40,10 @@ public class MainMenuController : MonoBehaviour
                 EnableButtons(true);
                 break;
             case eMainMenuState.ConnectionPopup:
-                _connectionPopup.Show();
+                ConnectionPopup.Instance.Show();
                 break;
             case eMainMenuState.SettingsPopup:
-                _settingsPopup.Show();
+                SettingsPopup.Instance.Show();
                 break;
         }
 

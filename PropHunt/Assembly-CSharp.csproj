@@ -37,14 +37,20 @@
   </PropertyGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\MainMenu\MainMenuController.cs" />
+     <Compile Include="Assets\Scripts\Game\Pause\PausePopup.cs" />
+     <Compile Include="Assets\Scripts\Game\LoadingController.cs" />
      <Compile Include="Assets\Scripts\Popup.cs" />
      <Compile Include="Assets\Scripts\MainMenu\Connection\ConnectionPopup.cs" />
      <Compile Include="Assets\Scripts\MainMenu\Connection\ConnectionController.cs" />
      <Compile Include="Assets\Scripts\MainMenu\Settings\SettingsController.cs" />
-     <Compile Include="Assets\Scripts\MainMenu\Settings\SettingsPopup.cs" />
      <Compile Include="Assets\Scripts\Game\GameController.cs" />
-     <Compile Include="Assets\Scripts\Game\Pause\PausePopup.cs" />
-     <Compile Include="Assets\Scripts\Game\LoadingController.cs" />
+     <Compile Include="Assets\Scripts\MainMenu\Settings\SettingsPopup.cs" />
+     <Compile Include="Assets\Scripts\Game\Pause\PauseMenuController.cs" />
+     <Compile Include="Assets\Scripts\InputController.cs" />
+     <Compile Include="Assets\Scripts\AudioController.cs" />
+     <Compile Include="Assets\Scripts\Game\PlayerController.cs" />
+     <Compile Include="Assets\Scripts\InitializationController.cs" />
+     <Compile Include="Assets\Scripts\Singleton.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

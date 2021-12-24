@@ -11,11 +11,6 @@ public class LoadingController : MonoBehaviour
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<LoadingController>(true);
-            }
-
             return _instance;
         }
     }
@@ -26,11 +21,7 @@ public class LoadingController : MonoBehaviour
 
     private void Awake()
     {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        _instance = this;
 
         DontDestroyOnLoad(gameObject);
     }
