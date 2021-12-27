@@ -92,11 +92,6 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsLocalPlayer)
-        {
-            return;
-        }
-        
         Vector3 wishDir = currentInput.normalized;
         float wishSpeed = currentInput.magnitude;
 
