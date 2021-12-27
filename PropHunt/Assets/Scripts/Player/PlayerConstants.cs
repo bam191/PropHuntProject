@@ -47,6 +47,14 @@ public static class PlayerConstants
     public static string Right = "Right";
     public static string RightDefault = "D";
     public static string RightTooltip = "Moves player right.";
+    
+    public static string Up = "Up";
+    public static string UpDefault = "E";
+    public static string UpTooltip = "Moves player camera up.";
+    
+    public static string Down = "Down";
+    public static string DownDefault = "Q";
+    public static string DownTooltip = "Moves player camera down.";
 
     public static string Jump = "Jump";
     public static string JumpDefault = "Space";

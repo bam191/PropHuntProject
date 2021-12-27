@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerMovement : NetworkBehaviour
 {
     [Header("Set In Editor")]
     public LayerMask layersToIgnore;
@@ -21,14 +22,12 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     private CameraMove cameraMove;
 
-    private bool noClip;
-    public Vector3 currentVelocity; // This result is the finalized value of velocityToApply, used for GhostVelocity value
+    private bool isNoClipping;
 
     private void Awake()
     {
         velocityToApply = Vector3.zero;
-        currentVelocity = velocityToApply;
-        noClip = false;
+        isNoClipping = false;
     }
 
     private void Start()
@@ -40,7 +39,12 @@ public class PlayerMovement : MonoBehaviour
     // All input checking going in Update, so no Input queries are missed
     private void Update()
     {
-        if (noClip)
+        if (!IsLocalPlayer)
+        {
+            return;
+        }
+
+        if (isNoClipping)
         {
             NoClipMove();
             return;
@@ -54,7 +58,6 @@ public class PlayerMovement : MonoBehaviour
         CheckJump();
 
         currentInput = GetWorldSpaceInputVector();
-        currentVelocity = velocityToApply;
         controller.Move(velocityToApply * Time.deltaTime);
 
         CheckFootstepSound();
@@ -71,6 +74,11 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!IsLocalPlayer)
+        {
+            return;
+        }
+        
         Vector3 wishDir = currentInput.normalized;
         float wishSpeed = currentInput.magnitude;
 
@@ -367,33 +375,33 @@ public class PlayerMovement : MonoBehaviour
 
     public void NoClip()
     {
-        noClip = !noClip;
-        controller.enabled = !noClip;
+        isNoClipping = !isNoClipping;
+        controller.enabled = !isNoClipping;
     }
 
     private void NoClipMove()
     {
-        if (Input.GetKey(KeyCode.W))
+        if (InputManager.GetKey(PlayerConstants.Forward))
         {
             transform.position += cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (Input.GetKey(KeyCode.S))
+        if (InputManager.GetKey(PlayerConstants.Back))
         {
             transform.position += -cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (Input.GetKey(KeyCode.D))
+        if (InputManager.GetKey(PlayerConstants.Right))
         {
             transform.position += cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (Input.GetKey(KeyCode.A))
+        if (InputManager.GetKey(PlayerConstants.Left))
         {
             transform.position += -cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (Input.GetKey(KeyCode.E))
+        if (InputManager.GetKey(PlayerConstants.Up))
         {
             transform.position += cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (Input.GetKey(KeyCode.Q))
+        if (InputManager.GetKey(PlayerConstants.Down))
         {
             transform.position += -cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
