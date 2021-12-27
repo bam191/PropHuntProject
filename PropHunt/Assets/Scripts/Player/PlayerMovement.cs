@@ -24,10 +24,21 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool isNoClipping;
 
+    private NetworkVariable<bool> requestCrouch;
+    private NetworkVariable<Vector3> requestedPosition;
+    private NetworkVariable<Vector3> requestedRotation;
+    
+
+    private PlayerMovementInputs _currentInputs;
+    private PlayerMovementInputs _lastInputs;
+
     private void Awake()
     {
         velocityToApply = Vector3.zero;
         isNoClipping = false;
+
+        _currentInputs = new PlayerMovementInputs();
+        _lastInputs = new PlayerMovementInputs();
     }
 
     private void Start()
@@ -39,28 +50,40 @@ public class PlayerMovement : NetworkBehaviour
     // All input checking going in Update, so no Input queries are missed
     private void Update()
     {
-        if (!IsLocalPlayer)
+        if (IsLocalPlayer)
         {
-            return;
-        }
+            if (isNoClipping)
+            {
+                NoClipMove();
+                return;
+            }
 
-        if (isNoClipping)
+            SetGrounded();
+            CheckCrouch();
+
+            ApplyGravity();
+
+            CheckJump();
+
+            currentInput = GetWorldSpaceInputVector();
+            controller.Move(velocityToApply * Time.deltaTime);
+
+            CheckFootstepSound();
+            
+            _currentInputs.requestedPosition = gameObject.transform.position;
+            _currentInputs.requestedRotation = cameraMove.TargetRotation.eulerAngles;
+            if (!_currentInputs.Equals(_lastInputs))
+            {
+                MovementServerRpc(_currentInputs);
+                _lastInputs = _currentInputs;
+            }
+        }
+        else
         {
-            NoClipMove();
-            return;
+            transform.position = requestedPosition.Value;
+            transform.rotation = Quaternion.Euler(requestedRotation.Value);
         }
-
-        SetGrounded();
-        CheckCrouch();
-
-        ApplyGravity();
-
-        CheckJump();
-
-        currentInput = GetWorldSpaceInputVector();
-        controller.Move(velocityToApply * Time.deltaTime);
-
-        CheckFootstepSound();
+        
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -74,11 +97,6 @@ public class PlayerMovement : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsLocalPlayer)
-        {
-            return;
-        }
-        
         Vector3 wishDir = currentInput.normalized;
         float wishSpeed = currentInput.magnitude;
 
@@ -123,7 +141,18 @@ public class PlayerMovement : NetworkBehaviour
     #region Crouch
     private void CheckCrouch()
     {
-        if (InputManager.GetKey(PlayerConstants.Crouch))
+        bool shouldCrouch = false;
+        if (IsLocalPlayer)
+        {
+            shouldCrouch = InputManager.GetKey(PlayerConstants.Crouch);
+            _currentInputs.requestCrouch = shouldCrouch;
+        }
+        else
+        {
+            shouldCrouch = requestCrouch.Value;
+        }
+        
+        if (shouldCrouch)
         {
             crouching = true;
         }
@@ -201,9 +230,13 @@ public class PlayerMovement : NetworkBehaviour
 
     private void CheckJump()
     {
-        bool requestJump = InputManager.GetKey(PlayerConstants.Jump);
+        bool shouldJump = false;
+        if (IsLocalPlayer)
+        {
+            shouldJump = InputManager.GetKey(PlayerConstants.Jump);
+        }
 
-        if (grounded && requestJump)
+        if (grounded && shouldJump)
         {
             RaycastHit hit;
             Vector3 startPos = transform.position - new Vector3(0, controller.height / 2, 0);
@@ -246,22 +279,27 @@ public class PlayerMovement : NetworkBehaviour
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
-        if (InputManager.GetKey(PlayerConstants.Left))
+        bool shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+        bool shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
+        bool shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+        bool shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
+
+        if (shouldMoveLeft)
         {
             horizontalSpeed -= moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Right))
+        if (shouldMoveRight)
         {
             horizontalSpeed += moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Back))
+        if (shouldMoveBack)
         {
             verticalSpeed -= moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Forward))
+        if (shouldMoveForward)
         {
             verticalSpeed += moveSpeed;
         }
@@ -381,29 +419,26 @@ public class PlayerMovement : NetworkBehaviour
 
     private void NoClipMove()
     {
-        if (InputManager.GetKey(PlayerConstants.Forward))
+        bool shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+        bool shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
+        bool shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+        bool shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
+        
+        if (shouldMoveForward)
         {
             transform.position += cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Back))
+        if (shouldMoveBack)
         {
             transform.position += -cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Right))
+        if (shouldMoveRight)
         {
             transform.position += cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Left))
+        if (shouldMoveLeft)
         {
             transform.position += -cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
-        }
-        if (InputManager.GetKey(PlayerConstants.Up))
-        {
-            transform.position += cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
-        }
-        if (InputManager.GetKey(PlayerConstants.Down))
-        {
-            transform.position += -cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
     }
 
@@ -433,5 +468,18 @@ public class PlayerMovement : NetworkBehaviour
             //PlayerSoundEffects.PlaySoundEffect(SoundEffectType.Footstep);
         }
     }
+    #endregion
+
+
+    #region  RPCs
+
+    [ServerRpc]
+    public void MovementServerRpc(PlayerMovementInputs input)
+    {
+        requestCrouch.Value = input.requestCrouch;
+        requestedPosition.Value = input.requestedPosition;
+        requestedRotation.Value = input.requestedRotation;
+    }
+
     #endregion
 }

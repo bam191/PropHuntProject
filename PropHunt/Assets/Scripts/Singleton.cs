@@ -31,8 +31,14 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             _instance = (T)(object)this;
         }
-        DontDestroyOnLoad(_instance.gameObject);
-        Initialize();
+    }
+
+    protected virtual void Start()
+    {
+        if (_instance == this)
+        {
+            Initialize();
+        }
     }
     
     /// <summary>
@@ -40,5 +46,4 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     /// Use this if you want to have code that runs in Awake()
     /// </summary>
     public virtual void Initialize() { }
-
 }

@@ -2,21 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioController : MonoBehaviour
+public class AudioController : Singleton<AudioController>
 {
-    private static AudioController _instance;
-    public static AudioController Instance
+    public override void Initialize()
     {
-        get
-        {
-            return _instance;
-        }
-    }
-
-    private void Awake()
-    {
-        _instance = this;
-
         DontDestroyOnLoad(gameObject);
+        base.Initialize();
     }
 }
