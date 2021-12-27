@@ -59,7 +59,12 @@ public class LobbyController : Singleton<LobbyController>
 
         _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
 
-        _networkManager.StartClient();
+        LoadingController.Instance.LoadGameScene();
+        LoadingController.Instance.OnSceneLoadedCallback += () =>
+            {
+                _networkManager.StartClient();
+                LoadingController.Instance.OnSceneLoadedCallback = null;
+            };
     }
 
     public void ConnectionApproval(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate connectionApprovedDelegate)
@@ -69,13 +74,20 @@ public class LobbyController : Singleton<LobbyController>
         bool createPlayerObject = true;
         bool approved = true;
 
-        LoadingController.Instance.LoadGameScene();
+        if (clientId == _networkManager.LocalClientId)
+        {
+            LoadingController.Instance.LoadGameScene();
 
-        LoadingController.Instance.OnSceneLoadedCallback += () =>
+            LoadingController.Instance.OnSceneLoadedCallback += () =>
+            {
+                connectionApprovedDelegate(createPlayerObject, null, approved, Vector3.zero, Quaternion.identity);
+                LoadingController.Instance.OnSceneLoadedCallback = null;
+            };
+        }
+        else
         {
             connectionApprovedDelegate(createPlayerObject, null, approved, Vector3.zero, Quaternion.identity);
-            LoadingController.Instance.OnSceneLoadedCallback = null;
-        };
+        }        
     }
 
     public void Disconnect()
