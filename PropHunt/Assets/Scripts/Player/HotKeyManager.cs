@@ -12,6 +12,7 @@ public class HotKeyManager : Singleton<HotKeyManager> {
 
     public override void Initialize()
     {
+        DontDestroyOnLoad(gameObject);
         InitDefaults();
         LoadSavedHotkeys();
         LoadTooltips();
