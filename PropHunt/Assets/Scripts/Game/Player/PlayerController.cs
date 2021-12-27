@@ -17,7 +17,7 @@ public class PlayerController : NetworkBehaviour
             _camera.SetActive(false);
             //_playerMovement.enabled = false;
             _cameraMove.enabled = false;
-            //_characterController.enabled = false;
+            _characterController.enabled = false;
         }
     }
 }

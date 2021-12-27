@@ -86,8 +86,8 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            transform.position = _currentInputs.requestedPosition;
-            transform.rotation = Quaternion.Euler(_currentInputs.requestedRotation);
+            transform.position = requestedPosition.Value;
+            transform.rotation = Quaternion.Euler(requestedRotation.Value);
         }
         
     }
