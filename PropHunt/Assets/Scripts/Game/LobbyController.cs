@@ -15,6 +15,8 @@ public class LobbyController : Singleton<LobbyController>
     private ClientData _clientData;
     private LobbyData _lobbyData;
 
+    public LobbyData LobbyData => _lobbyData;
+
     private bool _isHosting;
 
     public override void Initialize()
@@ -31,6 +33,11 @@ public class LobbyController : Singleton<LobbyController>
 
         DontDestroyOnLoad(gameObject);
         base.Initialize();
+
+        _lobbyData = new LobbyData()
+        {
+            propsPerSeeker = 1
+        };
     }
 
     private void AddListeners()

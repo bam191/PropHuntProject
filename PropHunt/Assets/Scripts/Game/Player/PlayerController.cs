@@ -12,12 +12,16 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<bool> requestCrouch;
     public NetworkVariable<Vector3> requestedPosition;
     public NetworkVariable<Vector3> requestedRotation;
+    
     public NetworkVariable<int> health = new NetworkVariable<int>(100);
     public NetworkVariable<int> kills = new NetworkVariable<int>(0);
     public NetworkVariable<int> deaths = new NetworkVariable<int>(0);
 
+    public NetworkVariable<eTeam> team;
     private void Start()
     {
+        GameController.Instance.RegisterPlayer(this);
+
         if (IsLocalPlayer)
         {
             _localPlayer.SetActive(true);
@@ -28,6 +32,11 @@ public class PlayerController : NetworkBehaviour
             _localPlayer.SetActive(false);
             _serverPlayer.SetActive(true);
         }
+    }
+
+    public void SetTeam(eTeam team)
+    {
+        this.team.Value = team;
     }
     
     #region  RPCs
