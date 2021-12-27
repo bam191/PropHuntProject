@@ -21,22 +21,24 @@ public class ConnectionController : MonoBehaviour
         _unetTransport = _networkManager?.GetComponent<UNetTransport>();
     }
 
-    public void ConnectToServer(string address)
+    public void ConnectToServer(string address, string username)
     {
         EnsureNetworkManagerExists();
         _unetTransport.ConnectAddress = address;
         _unetTransport.ConnectPort = _defaultPort;
         _unetTransport.ServerListenPort = _defaultPort;
 
+        LobbyController.Instance.SetClientData(username);
         LobbyController.Instance.StartClient();
     }
 
-    public void HostServer()
+    public void HostServer(string username)
     {
         EnsureNetworkManagerExists();
         _unetTransport.ConnectPort = _defaultPort;
         _unetTransport.ServerListenPort = _defaultPort;
 
+        LobbyController.Instance.SetClientData(username);
         LobbyController.Instance.StartHost();        
     }
 

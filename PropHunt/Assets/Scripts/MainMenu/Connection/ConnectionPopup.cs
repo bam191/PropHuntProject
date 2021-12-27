@@ -11,6 +11,7 @@ public class ConnectionPopup : Popup
     [SerializeField] private TMP_InputField _ipInput;
     [SerializeField] private TMP_Text _ipValidationText;
     [SerializeField] private Button _connectButton;
+    [SerializeField] private TMP_InputField _usernameInput;
 
     private ConnectionController _connectionController;
     private void Awake()
@@ -34,12 +35,12 @@ public class ConnectionPopup : Popup
 
     public void TryConnect()
     {
-        _connectionController.ConnectToServer(_ipInput.text);
+        _connectionController.ConnectToServer(_ipInput.text, _usernameInput.text);
     }
 
     public void TryHost()
     {
-        _connectionController.HostServer();
+        _connectionController.HostServer(_usernameInput.text);
     }
     
     private void OnIPChanged(string newValue)
