@@ -70,11 +70,15 @@ public class PlayerMovement : NetworkBehaviour
 
         CheckFootstepSound();
 
-        if (_currentInputs.Equals(_lastInputs))
+        if (IsLocalPlayer)
         {
-            MovementServerRpc(_currentInputs);
-            _lastInputs = _currentInputs;
+            if (!_currentInputs.Equals(_lastInputs))
+            {
+                MovementServerRpc(_currentInputs);
+                _lastInputs = _currentInputs;
+            }
         }
+        
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)

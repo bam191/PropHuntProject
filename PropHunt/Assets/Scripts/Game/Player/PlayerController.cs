@@ -15,7 +15,7 @@ public class PlayerController : NetworkBehaviour
         if (!IsLocalPlayer)
         {
             _camera.SetActive(false);
-            _playerMovement.enabled = false;
+            //_playerMovement.enabled = false;
             _cameraMove.enabled = false;
             _characterController.enabled = false;
         }
