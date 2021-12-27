@@ -6,17 +6,39 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private GameObject _camera;
-    [SerializeField] private PlayerMovement _playerMovement;
-    [SerializeField] private CameraMove _cameraMove;
-    [SerializeField] private CharacterController _characterController;
+    [SerializeField] private GameObject _localPlayer;
+    [SerializeField] private GameObject _serverPlayer;
+    
+    public NetworkVariable<bool> requestCrouch;
+    public NetworkVariable<Vector3> requestedPosition;
+    public NetworkVariable<Vector3> requestedRotation;
+    public NetworkVariable<int> health = new NetworkVariable<int>(100);
+    public NetworkVariable<int> kills = new NetworkVariable<int>(0);
+    public NetworkVariable<int> deaths = new NetworkVariable<int>(0);
+
     private void Start()
     {
-        if (!IsLocalPlayer)
+        if (IsLocalPlayer)
         {
-            _camera.SetActive(false);
-            _cameraMove.enabled = false;
-            _characterController.enabled = false;
+            _localPlayer.SetActive(true);
+            _serverPlayer.SetActive(false);
+        }
+        else
+        {
+            _localPlayer.SetActive(false);
+            _serverPlayer.SetActive(true);
         }
     }
+    
+    #region  RPCs
+
+    [ServerRpc]
+    public void MovementServerRpc(PlayerMovementInputs input)
+    {
+        requestCrouch.Value = input.requestCrouch;
+        requestedPosition.Value = input.requestedPosition;
+        requestedRotation.Value = input.requestedRotation;
+    }
+
+    #endregion
 }
