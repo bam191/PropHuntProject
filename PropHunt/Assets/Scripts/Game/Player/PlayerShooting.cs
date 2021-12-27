@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerShooting : MonoBehaviour
+public class PlayerShooting : NetworkBehaviour
 {
     [SerializeField] private CameraMove _cameraMove;
     [SerializeField] private const float shootDistance = 1000;
@@ -16,28 +16,27 @@ public class PlayerShooting : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (IsLocalPlayer)
         {
-            Debug.Log(("shooting"));
-            Ray ray = _cameraMove.playerCamera.ScreenPointToRay(Input.mousePosition);
-
-            Fire(ray);
+            if (Input.GetMouseButtonDown(0))
+            {
+                Debug.Log(("shooting"));
+                Fire();
+            }
         }
     }
     
-    #region  RPCs
-
-    [ServerRpc]
-    public void Fire(Ray ray)
+    public void Fire()
     {
+        Ray ray = _cameraMove.playerCamera.ScreenPointToRay(Input.mousePosition);
+
         if (Physics.Raycast(ray, out var raycastHit, shootDistance, playerLayerMask))
         {
-            NetworkObject networkObject = raycastHit.collider.gameObject.GetComponent<NetworkObject>();
+            NetworkObject networkObject = raycastHit.collider.gameObject.GetComponentInParent<NetworkObject>();
 
             if (networkObject != null)
             {
-                InformPlayerHit();
-                Debug.Log($"enemy hit!: {networkObject.OwnerClientId}");
+                UpdateHealthServerRPC(1, networkObject.OwnerClientId);
             }
             else
             {
@@ -45,11 +44,40 @@ public class PlayerShooting : MonoBehaviour
             }
         }
     }
+    
+    #region  RPCs
+    [ServerRpc]
+    private void UpdateHealthServerRPC(int damage, ulong clientId)
+    {
+        var clientToDamage = NetworkManager.Singleton.ConnectedClients[clientId]
+            .PlayerObject.GetComponent<PlayerController>();
+
+        if (clientToDamage != null && clientToDamage.health.Value > 0)
+        {
+            clientToDamage.health.Value -= damage;
+        }
+        
+        // Execute method on the client getting hit
+        NotifyHealthChangedClientRPC(damage, new ClientRpcParams()
+        {
+            Send = new ClientRpcSendParams()
+            {
+                TargetClientIds = new ulong[] {clientId}
+            }
+        });
+        
+    }
 
     [ClientRpc]
-    private void InformPlayerHit()
-    {
+    public void NotifyHealthChangedClientRPC(int damage, ClientRpcParams clientRpcParams = default)
+    { 
+        // Don't notify myself
+        if (IsOwner)
+        {
+            return;
+        }
         
+        NetworkLog.LogInfoServer($"Client got hit \ndamage:{damage}");
     }
 
     #endregion

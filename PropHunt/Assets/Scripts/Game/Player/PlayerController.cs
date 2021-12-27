@@ -12,7 +12,10 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<bool> requestCrouch;
     public NetworkVariable<Vector3> requestedPosition;
     public NetworkVariable<Vector3> requestedRotation;
-    
+    public NetworkVariable<int> health = new NetworkVariable<int>(100);
+    public NetworkVariable<int> kills = new NetworkVariable<int>(0);
+    public NetworkVariable<int> deaths = new NetworkVariable<int>(0);
+
     private void Start()
     {
         if (IsLocalPlayer)
