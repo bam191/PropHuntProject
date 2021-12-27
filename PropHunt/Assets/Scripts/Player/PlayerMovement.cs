@@ -24,10 +24,23 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool isNoClipping;
 
+    private NetworkVariable<bool> requestJump;
+    private NetworkVariable<bool> requestCrouch;
+    private NetworkVariable<bool> requestLeft;
+    private NetworkVariable<bool> requestRight;
+    private NetworkVariable<bool> requestBack;
+    private NetworkVariable<bool> requestForward;
+
+    private PlayerMovementInputs _currentInputs;
+    private PlayerMovementInputs _lastInputs;
+
     private void Awake()
     {
         velocityToApply = Vector3.zero;
         isNoClipping = false;
+
+        _currentInputs = new PlayerMovementInputs();
+        _lastInputs = new PlayerMovementInputs();
     }
 
     private void Start()
@@ -39,11 +52,6 @@ public class PlayerMovement : NetworkBehaviour
     // All input checking going in Update, so no Input queries are missed
     private void Update()
     {
-        if (!IsLocalPlayer)
-        {
-            return;
-        }
-
         if (isNoClipping)
         {
             NoClipMove();
@@ -61,6 +69,12 @@ public class PlayerMovement : NetworkBehaviour
         controller.Move(velocityToApply * Time.deltaTime);
 
         CheckFootstepSound();
+
+        if (_currentInputs.Equals(_lastInputs))
+        {
+            MovementServerRpc(_currentInputs);
+            _lastInputs = _currentInputs;
+        }
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -123,7 +137,18 @@ public class PlayerMovement : NetworkBehaviour
     #region Crouch
     private void CheckCrouch()
     {
-        if (InputManager.GetKey(PlayerConstants.Crouch))
+        bool shouldCrouch = false;
+        if (IsLocalPlayer)
+        {
+            shouldCrouch = InputManager.GetKey(PlayerConstants.Crouch);
+            _currentInputs.requestCrouch = shouldCrouch;
+        }
+        else
+        {
+            shouldCrouch = requestCrouch.Value;
+        }
+        
+        if (shouldCrouch)
         {
             crouching = true;
         }
@@ -201,9 +226,18 @@ public class PlayerMovement : NetworkBehaviour
 
     private void CheckJump()
     {
-        bool requestJump = InputManager.GetKey(PlayerConstants.Jump);
+        bool shouldJump = false;
+        if (IsLocalPlayer)
+        {
+            shouldJump = InputManager.GetKey(PlayerConstants.Jump);
+            _currentInputs.requestJump = shouldJump;
+        }
+        else
+        {
+            shouldJump = requestJump.Value;
+        }
 
-        if (grounded && requestJump)
+        if (grounded && shouldJump)
         {
             RaycastHit hit;
             Vector3 startPos = transform.position - new Vector3(0, controller.height / 2, 0);
@@ -246,22 +280,48 @@ public class PlayerMovement : NetworkBehaviour
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
-        if (InputManager.GetKey(PlayerConstants.Left))
+        bool shouldMoveLeft = false;
+        bool shouldMoveRight = false;
+        bool shouldMoveBack = false;
+        bool shouldMoveForward = false;
+        if (IsLocalPlayer)
+        {
+            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+            _currentInputs.requestLeft = shouldMoveLeft;
+            
+            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Right);
+            _currentInputs.requestRight = shouldMoveRight;
+            
+            shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+            _currentInputs.requestBack = shouldMoveBack;
+            
+            shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
+            _currentInputs.requestForward = shouldMoveForward;
+        }
+        else
+        {
+            shouldMoveLeft = requestLeft.Value;
+            shouldMoveRight = requestRight.Value;
+            shouldMoveBack = requestBack.Value;
+            shouldMoveForward = requestForward.Value;
+        }
+        
+        if (shouldMoveLeft)
         {
             horizontalSpeed -= moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Right))
+        if (shouldMoveRight)
         {
             horizontalSpeed += moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Back))
+        if (shouldMoveBack)
         {
             verticalSpeed -= moveSpeed;
         }
 
-        if (InputManager.GetKey(PlayerConstants.Forward))
+        if (shouldMoveForward)
         {
             verticalSpeed += moveSpeed;
         }
@@ -381,29 +441,47 @@ public class PlayerMovement : NetworkBehaviour
 
     private void NoClipMove()
     {
-        if (InputManager.GetKey(PlayerConstants.Forward))
+        bool shouldMoveLeft = false;
+        bool shouldMoveRight = false;
+        bool shouldMoveBack = false;
+        bool shouldMoveForward = false;
+        if (IsLocalPlayer)
+        {
+            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+            _currentInputs.requestLeft = shouldMoveLeft;
+            
+            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Right);
+            _currentInputs.requestRight = shouldMoveRight;
+            
+            shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+            _currentInputs.requestBack = shouldMoveBack;
+            
+            shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
+            _currentInputs.requestForward = shouldMoveForward;
+        }
+        else
+        {
+            shouldMoveLeft = requestLeft.Value;
+            shouldMoveRight = requestRight.Value;
+            shouldMoveBack = requestBack.Value;
+            shouldMoveForward = requestForward.Value;
+        }
+        
+        if (shouldMoveForward)
         {
             transform.position += cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Back))
+        if (shouldMoveBack)
         {
             transform.position += -cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Right))
+        if (shouldMoveRight)
         {
             transform.position += cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
-        if (InputManager.GetKey(PlayerConstants.Left))
+        if (shouldMoveLeft)
         {
             transform.position += -cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
-        }
-        if (InputManager.GetKey(PlayerConstants.Up))
-        {
-            transform.position += cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
-        }
-        if (InputManager.GetKey(PlayerConstants.Down))
-        {
-            transform.position += -cameraMove.playerCamera.transform.up * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
     }
 
@@ -433,5 +511,21 @@ public class PlayerMovement : NetworkBehaviour
             //PlayerSoundEffects.PlaySoundEffect(SoundEffectType.Footstep);
         }
     }
+    #endregion
+
+
+    #region  RPCs
+
+    [ServerRpc]
+    public void MovementServerRpc(PlayerMovementInputs input)
+    {
+        requestForward.Value = input.requestForward;
+        requestBack.Value = input.requestBack;
+        requestLeft.Value = input.requestLeft;
+        requestRight.Value = input.requestRight;
+        requestJump.Value = input.requestJump;
+        requestCrouch.Value = input.requestCrouch;
+    }
+
     #endregion
 }
