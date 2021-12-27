@@ -50,6 +50,9 @@ public class LobbyController : Singleton<LobbyController>
 
     public void StartClient()
     {
+        _clientData = new ClientData();
+        _clientData.Username = "alexi";
+        
         _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
         _networkManager.StartClient();
         LoadingController.Instance.LoadGameScene();

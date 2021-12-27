@@ -5,10 +5,10 @@ using UnityEngine;
 using System.Runtime.InteropServices;
 
 [Serializable]
-public class ClientData
+public struct ClientData
 {
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 100)]
-    public string Username = "alexi";
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+    public string Username;
     public ulong ClientId;
 
     public static byte[] GetBytes(ClientData clientData)
