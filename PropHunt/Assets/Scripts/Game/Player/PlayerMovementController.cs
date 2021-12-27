@@ -3,7 +3,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovementController : NetworkBehaviour
 {
     [SerializeField] private LayerMask _layersToIgnore;
     [SerializeField] private PlayerController _playerController; 
