@@ -24,6 +24,7 @@ public class LobbyController : Singleton<LobbyController>
         _loadingController = LoadingController.Instance;
         _networkConfig = _networkManager.NetworkConfig;
         _networkConfig.ConnectionApproval = true;
+        _networkConfig.EnableSceneManagement = true;
         _networkManager.ConnectionApprovalCallback += ConnectionApproval;
 
         AddListeners();

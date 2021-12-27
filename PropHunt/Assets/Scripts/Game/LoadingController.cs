@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static Unity.Netcode.NetworkSceneManager;
 
 public class LoadingController : Singleton<LoadingController>
 {
@@ -16,13 +18,53 @@ public class LoadingController : Singleton<LoadingController>
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += OnExternalSceneLoaded;
-
+        
         base.Initialize();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown("f"))
+        {
+            LoadServerLevel("TestLevel");
+        }
+        
+        if (Input.GetKeyDown("r"))
+        {
+            LoadServerLevel("TestLevel2");
+        }
     }
 
     public void LoadGameScene()
     {
         SceneManager.LoadScene(GAME_SCENE_NAME, LoadSceneMode.Single);
+    }
+
+    public void LoadServerLevel(string levelName)
+    {
+        if (_loadedLevel != null)
+        {
+            UnloadCurrentServerLevel();
+            InternalLoadServerLevel(levelName);
+        }
+        else
+        {
+            InternalLoadServerLevel(levelName);
+        }
+    }
+
+    private void InternalLoadServerLevel(string levelName)
+    {
+        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnServerSceneLoaded;
+        NetworkManager.Singleton.SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
+        Debug.LogError("load scene " + levelName);
+    }
+
+    private void OnServerSceneLoaded(ulong clientId, string levelName, LoadSceneMode loadSceneMode)
+    {
+        Debug.LogError("on loaded " + levelName);
+        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnServerSceneLoaded;
+        _loadedLevel = SceneManager.GetSceneByName(levelName);
     }
 
     public void LoadLevel(string levelName)
@@ -69,5 +111,13 @@ public class LoadingController : Singleton<LoadingController>
     {
         SceneManager.sceneUnloaded += OnSceneUnloaded;
         SceneManager.UnloadSceneAsync((Scene)_loadedLevel).completed += onUnloaded;
+    }
+
+    private void UnloadCurrentServerLevel()
+    {
+        Debug.LogError("server unloading " + _loadedLevel?.name);
+        NetworkManager.Singleton.SceneManager.UnloadScene((Scene)_loadedLevel);
+        _loadedLevel = null;
+        //onUnloaded?.Invoke(null);
     }
 }
