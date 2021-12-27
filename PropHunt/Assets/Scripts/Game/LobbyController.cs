@@ -44,11 +44,13 @@ public class LobbyController : Singleton<LobbyController>
         if (_isHosting) return;
 
         _isHosting = true;
+
         _clientData = new ClientData();
         _clientData.Username = "alexi";
-
         _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
+
         _networkManager.StartHost();
+
         LoadingController.Instance.LoadGameScene();
     }
 
@@ -65,6 +67,11 @@ public class LobbyController : Singleton<LobbyController>
     public void ConnectionApproval(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate connectionApprovedDelegate)
     {
         Debug.LogError(ClientData.FromBytes(connectionData).Username);
+
+        bool createPlayerObject = true;
+        bool approved = true;
+
+        connectionApprovedDelegate(createPlayerObject, null, approved, Vector3.zero, Quaternion.identity);
     }
 
     public void Disconnect()
