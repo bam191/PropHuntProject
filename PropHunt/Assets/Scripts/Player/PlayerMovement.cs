@@ -289,7 +289,7 @@ public class PlayerMovement : NetworkBehaviour
             shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
             _currentInputs.requestLeft = shouldMoveLeft;
             
-            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Right);
+            shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
             _currentInputs.requestRight = shouldMoveRight;
             
             shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
@@ -450,7 +450,7 @@ public class PlayerMovement : NetworkBehaviour
             shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
             _currentInputs.requestLeft = shouldMoveLeft;
             
-            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Right);
+            shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
             _currentInputs.requestRight = shouldMoveRight;
             
             shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
