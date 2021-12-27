@@ -6,17 +6,20 @@ using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
-    [SerializeField] private GameObject _camera;
-    [SerializeField] private PlayerMovement _playerMovement;
-    [SerializeField] private CameraMove _cameraMove;
-    [SerializeField] private CharacterController _characterController;
+    [SerializeField] private GameObject _localPlayer;
+    [SerializeField] private GameObject _serverPlayer;
+    
     private void Start()
     {
-        if (!IsLocalPlayer)
+        if (IsLocalPlayer)
         {
-            _camera.SetActive(false);
-            _cameraMove.enabled = false;
-            _characterController.enabled = false;
+            _localPlayer.SetActive(true);
+            _serverPlayer.SetActive(false);
+        }
+        else
+        {
+            _localPlayer.SetActive(false);
+            _serverPlayer.SetActive(true);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InputController : Singleton<InputController>
 {
-    private void Awake()
+    public override void Initialize()
     {
         DontDestroyOnLoad(gameObject);
     }
