@@ -21,8 +21,6 @@ public class MainMenuController : Singleton<MainMenuController>
 
     private void Awake()
     {
-        SetInstance(this);
-
         SetState(eMainMenuState.MainMenu);
     }
 
