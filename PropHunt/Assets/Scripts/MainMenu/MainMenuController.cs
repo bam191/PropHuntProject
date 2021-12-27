@@ -16,10 +16,12 @@ public class MainMenuController : Singleton<MainMenuController>
     [SerializeField] private Button _serverBrowserButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
+    [SerializeField] private SettingsPopup _connectionPopup;
+    [SerializeField] private SettingsPopup _settingPopup;
 
     private eMainMenuState _currentState = eMainMenuState.None;
 
-    private void Awake()
+    public override void Initialize()
     {
         SetState(eMainMenuState.MainMenu);
     }
@@ -29,8 +31,8 @@ public class MainMenuController : Singleton<MainMenuController>
         if (_currentState == state) return;
 
         EnableButtons(false);
-        ConnectionPopup.Instance.Hide();
-        SettingsPopup.Instance.Hide();
+        _connectionPopup.Hide();
+        _settingPopup.Hide();
 
         switch (state)
         {
@@ -38,10 +40,10 @@ public class MainMenuController : Singleton<MainMenuController>
                 EnableButtons(true);
                 break;
             case eMainMenuState.ConnectionPopup:
-                ConnectionPopup.Instance.Show();
+                _connectionPopup.Show();
                 break;
             case eMainMenuState.SettingsPopup:
-                SettingsPopup.Instance.Show();
+                _settingPopup.Show();
                 break;
         }
 

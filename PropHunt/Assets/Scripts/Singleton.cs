@@ -2,25 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
-    protected static T _instance;
+    private static T _instance;
 
-    public static T Instance => _instance;
-
-    public static T GetInstance()
-    {
-        if (_instance == null)
+    public static T Instance {
+        get
         {
-            _instance = FindObjectOfType<T>();
             if (_instance == null)
             {
-                GameObject singleton = new GameObject();
-                _instance = singleton.AddComponent<T>();
-                singleton.name = "[singleton] " + typeof(T).ToString();
+                _instance = FindObjectOfType<T>();
+                if (_instance == null)
+                {
+                    Debug.LogError($"No monobehavior exists in the scene for: {typeof(T)}");
+                }
             }
+            return _instance;
         }
-        return _instance;
     }
 
     protected virtual void Awake()

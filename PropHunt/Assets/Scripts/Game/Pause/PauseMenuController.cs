@@ -12,28 +12,16 @@ public class PauseMenuController : MonoBehaviour
         None
     }
 
-    private static PauseMenuController _instance;
-    public static PauseMenuController Instance
-    {
-        get
-        {
-            return _instance;
-        }
-    }
-
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
     private ePauseMenuState _currentState = ePauseMenuState.PauseMenu;
 
-    private Popup _settingsPopup;
-    private Popup _pausePopup;
+    [SerializeField] private Popup _settingsPopup;
+    [SerializeField] private Popup _pausePopup;
 
     private void Awake()
     {
-        _instance = this;
-        _settingsPopup = SettingsPopup.Instance;
-
         SetState(ePauseMenuState.None);
     }
 

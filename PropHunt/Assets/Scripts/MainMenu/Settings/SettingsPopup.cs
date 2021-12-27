@@ -6,36 +6,12 @@ using UnityEngine.UI;
 
 public class SettingsPopup : Popup
 {
-    private static SettingsPopup _instance;
-    public static SettingsPopup Instance
-    {
-        get
-        {
-            return _instance;
-        }
-    }
-
     [SerializeField] private Toggle _vsyncToggle;
     [SerializeField] private TMP_Dropdown _antialiasingDropdown;
     [SerializeField] private TMP_Dropdown _shadowDistanceDropdown;
     [SerializeField] private TMP_Dropdown _shadowResolutionDropdown;
     [SerializeField] private TMP_Dropdown _shadowQualityDropdown;
     [SerializeField] private TMP_Dropdown _textureQualityDropdown;
-
-    private void Awake()
-    {
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-        
-        DontDestroyOnLoad(gameObject);
-    }
 
     public override void Show()
     {
