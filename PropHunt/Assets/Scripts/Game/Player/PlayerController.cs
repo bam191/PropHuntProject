@@ -9,6 +9,10 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private GameObject _localPlayer;
     [SerializeField] private GameObject _serverPlayer;
     
+    public NetworkVariable<bool> requestCrouch;
+    public NetworkVariable<Vector3> requestedPosition;
+    public NetworkVariable<Vector3> requestedRotation;
+    
     private void Start()
     {
         if (IsLocalPlayer)
@@ -22,4 +26,16 @@ public class PlayerController : NetworkBehaviour
             _serverPlayer.SetActive(true);
         }
     }
+    
+    #region  RPCs
+
+    [ServerRpc]
+    public void MovementServerRpc(PlayerMovementInputs input)
+    {
+        requestCrouch.Value = input.requestCrouch;
+        requestedPosition.Value = input.requestedPosition;
+        requestedRotation.Value = input.requestedRotation;
+    }
+
+    #endregion
 }
