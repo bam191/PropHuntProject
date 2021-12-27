@@ -23,6 +23,7 @@ public class LobbyController : Singleton<LobbyController>
         _unetTransport = _networkManager?.GetComponent<UNetTransport>();
         _loadingController = LoadingController.Instance;
         _networkConfig = _networkManager.NetworkConfig;
+        _networkConfig.ConnectionApproval = true;
         _networkManager.ConnectionApprovalCallback += ConnectionApproval;
 
         AddListeners();
