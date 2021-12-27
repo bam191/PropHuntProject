@@ -9,11 +9,17 @@ public class ConnectionPopup : Popup
     {
         gameObject.SetActive(true);
         base.Show();
+        LoadLobbies();
     }
 
     public override void Hide()
     {
         gameObject.SetActive(false);
         base.Hide();
+    }
+
+    private void LoadLobbies()
+    {
+        
     }
 }
