@@ -4,3 +4,6 @@ PropHunt/UserSettings/
 PropHunt/.vscode/
 *.sln
 PropHunt/Temp/
+*.csproj
+.idea/
+PropHunt/obj
