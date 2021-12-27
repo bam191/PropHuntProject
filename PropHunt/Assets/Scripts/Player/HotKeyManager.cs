@@ -52,6 +52,8 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         LoadSavedKey(PlayerConstants.Back, PlayerConstants.BackDefault);
         LoadSavedKey(PlayerConstants.Left, PlayerConstants.LeftDefault);
         LoadSavedKey(PlayerConstants.Right, PlayerConstants.RightDefault);
+        LoadSavedKey(PlayerConstants.Up, PlayerConstants.UpDefault);
+        LoadSavedKey(PlayerConstants.Down, PlayerConstants.DownDefault);
         LoadSavedKey(PlayerConstants.Jump, PlayerConstants.JumpDefault);
         LoadSavedKey(PlayerConstants.Crouch, PlayerConstants.CrouchDefault);
         LoadSavedKey(PlayerConstants.ToggleUI, PlayerConstants.ToggleUIDefault);
@@ -90,6 +92,8 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         AddDefaultKey(PlayerConstants.Back, PlayerConstants.BackDefault);
         AddDefaultKey(PlayerConstants.Left, PlayerConstants.LeftDefault);
         AddDefaultKey(PlayerConstants.Right, PlayerConstants.RightDefault);
+        AddDefaultKey(PlayerConstants.Up, PlayerConstants.UpDefault);
+        AddDefaultKey(PlayerConstants.Down, PlayerConstants.DownDefault);
         AddDefaultKey(PlayerConstants.Jump, PlayerConstants.JumpDefault);
         AddDefaultKey(PlayerConstants.Crouch, PlayerConstants.CrouchDefault);
         AddDefaultKey(PlayerConstants.ToggleUI, PlayerConstants.ToggleUIDefault);
@@ -115,6 +119,8 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         tooltips.Add(PlayerConstants.Back, PlayerConstants.BackTooltip);
         tooltips.Add(PlayerConstants.Left, PlayerConstants.LeftTooltip);
         tooltips.Add(PlayerConstants.Right, PlayerConstants.RightTooltip);
+        tooltips.Add(PlayerConstants.Up, PlayerConstants.UpTooltip);
+        tooltips.Add(PlayerConstants.Down, PlayerConstants.DownTooltip);
         tooltips.Add(PlayerConstants.Jump, PlayerConstants.JumpTooltip);
         tooltips.Add(PlayerConstants.Crouch, PlayerConstants.CrouchTooltip);
         tooltips.Add(PlayerConstants.ToggleUI, PlayerConstants.ToggleUITooltip);
