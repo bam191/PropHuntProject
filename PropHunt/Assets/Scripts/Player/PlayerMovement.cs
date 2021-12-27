@@ -77,7 +77,7 @@ public class PlayerMovement : NetworkBehaviour
             CheckFootstepSound();
             
             _currentInputs.requestedPosition = gameObject.transform.position;
-            _currentInputs.requestedRotation = gameObject.transform.rotation.eulerAngles;
+            _currentInputs.requestedRotation = cameraMove.TargetRotation.eulerAngles;
             if (!_currentInputs.Equals(_lastInputs))
             {
                 MovementServerRpc(_currentInputs);
