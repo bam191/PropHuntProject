@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PlayerShooting : NetworkBehaviour
 {
-    [SerializeField] private CameraMove _cameraMove;
+    [SerializeField] private PlayerCameraController _playerCameraController;
     [SerializeField] private const float shootDistance = 1000;
     [SerializeField] private LayerMask playerLayerMask;
     
     void Start()
     {
-        
+        _playerCameraController = GetComponent<PlayerCameraController>();
     }
 
     void Update()
@@ -28,7 +28,7 @@ public class PlayerShooting : NetworkBehaviour
     
     public void Fire()
     {
-        Ray ray = _cameraMove.playerCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _playerCameraController.playerCamera.ScreenPointToRay(Input.mousePosition);
 
         if (Physics.Raycast(ray, out var raycastHit, shootDistance, playerLayerMask))
         {

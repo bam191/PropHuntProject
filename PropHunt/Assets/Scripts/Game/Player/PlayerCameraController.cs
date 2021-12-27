@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMove : MonoBehaviour
+public class PlayerCameraController : MonoBehaviour
 {
     public GameObject playerModel;
 

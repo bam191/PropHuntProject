@@ -64,6 +64,10 @@ public static class PlayerConstants
     public static string CrouchDefault = "LeftControl";
     public static string CrouchTooltip = "Makes player crouch.";
     
+    public static string Interact = "Interact";
+    public static string InteractDefault = "E";
+    public static string InteractTooltip = "Allows props to become a prop.";
+    
     public static string ToggleUI = "ToggleUI";
     public static string ToggleUIDefault = "Z";
     public static string ToggleUITooltip = "Toggles off all UI.";

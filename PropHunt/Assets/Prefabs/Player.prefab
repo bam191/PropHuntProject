@@ -432,6 +432,7 @@ GameObject:
   - component: {fileID: 8692858742597719795}
   - component: {fileID: 7087779553574389501}
   - component: {fileID: 6830165111272445484}
+  - component: {fileID: 6516025786734169986}
   m_Layer: 6
   m_Name: LocalPlayer
   m_TagString: Untagged
@@ -516,10 +517,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78979a773b73d1b4da2e0521da665daa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraMove: {fileID: 8692858742597719795}
+  playerCameraController: {fileID: 0}
   playerLayerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &6516025786734169986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4994038054698671540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f7c9e616f7fe214b8e70f0a32122730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  propLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!1 &5720888366913626865
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,6 +919,14 @@ MonoBehaviour:
     m_InternalValue: {x: 0, y: 0, z: 0}
   requestedRotation:
     m_InternalValue: {x: 0, y: 0, z: 0}
+  health:
+    m_InternalValue: 100
+  kills:
+    m_InternalValue: 0
+  deaths:
+    m_InternalValue: 0
+  team:
+    m_InternalValue: 0
 --- !u!1 &8068279349440102687
 GameObject:
   m_ObjectHideFlags: 0
