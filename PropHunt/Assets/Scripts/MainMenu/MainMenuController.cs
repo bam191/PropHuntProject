@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UNET;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,13 +18,18 @@ public class MainMenuController : Singleton<MainMenuController>
     [SerializeField] private Button _serverBrowserButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
+    
+    [SerializeField] private ConnectionPopup _connectionPopup;
+    
+    private Popup _settingsPopup;
+    [SerializeField] private Transform _settingsParent;
+    [SerializeField] private GameObject _settingsPopupPrefab;
 
     private eMainMenuState _currentState = eMainMenuState.None;
 
-    private void Awake()
+    public override void Initialize()
     {
-        SetInstance(this);
-
+        InitSettings();
         SetState(eMainMenuState.MainMenu);
     }
 
@@ -31,8 +38,8 @@ public class MainMenuController : Singleton<MainMenuController>
         if (_currentState == state) return;
 
         EnableButtons(false);
-        ConnectionPopup.Instance.Hide();
-        SettingsPopup.Instance.Hide();
+        _connectionPopup.Hide();
+        _settingsPopup.Hide();
 
         switch (state)
         {
@@ -40,10 +47,10 @@ public class MainMenuController : Singleton<MainMenuController>
                 EnableButtons(true);
                 break;
             case eMainMenuState.ConnectionPopup:
-                ConnectionPopup.Instance.Show();
+                _connectionPopup.Show();
                 break;
             case eMainMenuState.SettingsPopup:
-                SettingsPopup.Instance.Show();
+                _settingsPopup.Show();
                 break;
         }
 
@@ -75,5 +82,17 @@ public class MainMenuController : Singleton<MainMenuController>
     public void OnQuitButtonPressed()
     {
         Application.Quit();
+    }
+    
+    private void InitSettings()
+    {
+        GameObject settingsInstance = Instantiate(_settingsPopupPrefab, _settingsParent);
+        _settingsPopup = settingsInstance.GetComponent<SettingsPopup>();
+        _settingsPopup.OnHide += () => SetState(eMainMenuState.MainMenu);
+    }
+
+    public void TryHost()
+    {
+        NetworkManager.Singleton.StartHost();
     }
 }

@@ -12,28 +12,20 @@ public class PauseMenuController : MonoBehaviour
         None
     }
 
-    private static PauseMenuController _instance;
-    public static PauseMenuController Instance
-    {
-        get
-        {
-            return _instance;
-        }
-    }
-
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
 
     private ePauseMenuState _currentState = ePauseMenuState.PauseMenu;
 
+    [SerializeField] private Popup _pausePopup;
+
     private Popup _settingsPopup;
-    private Popup _pausePopup;
+    [SerializeField] private Transform _settingsParent;
+    [SerializeField] private GameObject _settingsPopupPrefab;
 
     private void Awake()
     {
-        _instance = this;
-        _settingsPopup = SettingsPopup.Instance;
-
+        InitSettings();
         SetState(ePauseMenuState.None);
     }
 
@@ -70,5 +62,12 @@ public class PauseMenuController : MonoBehaviour
     public void OnQuitButtonPressed()
     {
 
+    }
+
+    private void InitSettings()
+    {
+        GameObject settingsInstance = Instantiate(_settingsPopupPrefab, _settingsParent);
+        _settingsPopup = settingsInstance.GetComponent<SettingsPopup>();
+        _settingsPopup.OnHide += () => SetState(ePauseMenuState.PauseMenu);
     }
 }
