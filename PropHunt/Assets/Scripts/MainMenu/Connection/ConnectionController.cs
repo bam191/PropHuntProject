@@ -9,24 +9,40 @@ public class ConnectionController : MonoBehaviour
     private UNetTransport _unetTransport;
     private NetworkManager _networkManager;
 
+    private int _defaultPort = 7777;
+
     private void Awake()
     {
         _networkManager = NetworkManager.Singleton;
+        if (_networkManager == null)
+        {
+            Debug.LogError("Network manager does not exist. Make sure to load from the 'Startup' scene");
+        }
         _unetTransport = _networkManager?.GetComponent<UNetTransport>();
     }
 
-    public void ConnectToServer(string address, int port)
+    public void ConnectToServer(string address)
     {
+        EnsureNetworkManagerExists();
         _unetTransport.ConnectAddress = address;
-        _unetTransport.ConnectPort = port;
-        _unetTransport.ServerListenPort = port;
+        _unetTransport.ConnectPort = _defaultPort;
+        _unetTransport.ServerListenPort = _defaultPort;
 
         _networkManager.StartClient();
     }
 
-    public void HostServer(int port)
+    public void HostServer()
     {
-        _unetTransport.ConnectPort = port;
-        _unetTransport.ServerListenPort = port;
+        EnsureNetworkManagerExists();
+        _unetTransport.ConnectPort = _defaultPort;
+        _unetTransport.ServerListenPort = _defaultPort;
+
+        _networkManager.StartHost();
+    }
+
+    private void EnsureNetworkManagerExists()
+    {
+        _networkManager = NetworkManager.Singleton;
+        _unetTransport = _networkManager.GetComponent<UNetTransport>();
     }
 }

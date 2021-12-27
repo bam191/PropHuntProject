@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
+using Unity.Netcode.Transports.UNET;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +19,7 @@ public class MainMenuController : Singleton<MainMenuController>
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
     
-    [SerializeField] private Popup _connectionPopup;
+    [SerializeField] private ConnectionPopup _connectionPopup;
     
     private Popup _settingsPopup;
     [SerializeField] private Transform _settingsParent;
@@ -87,5 +89,10 @@ public class MainMenuController : Singleton<MainMenuController>
         GameObject settingsInstance = Instantiate(_settingsPopupPrefab, _settingsParent);
         _settingsPopup = settingsInstance.GetComponent<SettingsPopup>();
         _settingsPopup.OnHide += () => SetState(eMainMenuState.MainMenu);
+    }
+
+    public void TryHost()
+    {
+        NetworkManager.Singleton.StartHost();
     }
 }
