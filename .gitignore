@@ -7,3 +7,5 @@ PropHunt/Temp/
 *.csproj
 .idea/
 PropHunt/obj
+PropHunt/Assembly-CSharp.csproj
+PropHunt/Build

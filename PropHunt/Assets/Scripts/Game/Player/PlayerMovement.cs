@@ -5,29 +5,20 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [Header("Set In Editor")]
-    public LayerMask layersToIgnore;
+    [SerializeField] private LayerMask _layersToIgnore;
+    [SerializeField] private PlayerController _playerController; 
 
-    [Header("Debugging properties")]
     //The velocity applied at the end of every physics frame
-    public Vector3 velocityToApply;
-    public Vector3 currentInput;
+    private Vector3 velocityToApply;
+    private Vector3 currentInput;
 
-    [SerializeField]
     private bool grounded;
-
-    [SerializeField]
     private bool crouching;
 
-    public CharacterController controller;
+    private CharacterController controller;
     private CameraMove cameraMove;
 
     private bool isNoClipping;
-
-    private NetworkVariable<bool> requestCrouch;
-    private NetworkVariable<Vector3> requestedPosition;
-    private NetworkVariable<Vector3> requestedRotation;
-    
 
     private PlayerMovementInputs _currentInputs;
     private PlayerMovementInputs _lastInputs;
@@ -50,38 +41,30 @@ public class PlayerMovement : NetworkBehaviour
     // All input checking going in Update, so no Input queries are missed
     private void Update()
     {
-        if (IsLocalPlayer)
+        if (isNoClipping)
         {
-            if (isNoClipping)
-            {
-                NoClipMove();
-                return;
-            }
-
-            SetGrounded();
-            CheckCrouch();
-
-            ApplyGravity();
-
-            CheckJump();
-
-            currentInput = GetWorldSpaceInputVector();
-            controller.Move(velocityToApply * Time.deltaTime);
-
-            CheckFootstepSound();
-            
-            _currentInputs.requestedPosition = gameObject.transform.position;
-            _currentInputs.requestedRotation = cameraMove.TargetRotation.eulerAngles;
-            if (!_currentInputs.Equals(_lastInputs))
-            {
-                MovementServerRpc(_currentInputs);
-                _lastInputs = _currentInputs;
-            }
+            NoClipMove();
+            return;
         }
-        else
+
+        SetGrounded();
+        CheckCrouch();
+
+        ApplyGravity();
+
+        CheckJump();
+
+        currentInput = GetWorldSpaceInputVector();
+        controller.Move(velocityToApply * Time.deltaTime);
+
+        CheckFootstepSound();
+        
+        _currentInputs.requestedPosition = gameObject.transform.position;
+        _currentInputs.requestedRotation = cameraMove.TargetRotation.eulerAngles;
+        if (!_currentInputs.Equals(_lastInputs))
         {
-            transform.position = requestedPosition.Value;
-            transform.rotation = Quaternion.Euler(requestedRotation.Value);
+            _playerController.MovementServerRpc(_currentInputs);
+            _lastInputs = _currentInputs;
         }
         
     }
@@ -149,7 +132,7 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            shouldCrouch = requestCrouch.Value;
+            shouldCrouch = _playerController.requestCrouch.Value;
         }
         
         if (shouldCrouch)
@@ -182,7 +165,7 @@ public class PlayerMovement : NetworkBehaviour
         float castDistance = (PlayerConstants.StandingPlayerHeight - PlayerConstants.CrouchingPlayerHeight) + 0.01f;
         RaycastHit hit;
         Ray ray = new Ray(transform.position + new Vector3(0, PlayerConstants.CrouchingPlayerHeight / 2, 0), Vector3.up);
-        if (Physics.Raycast(ray, out hit, castDistance, layersToIgnore))
+        if (Physics.Raycast(ray, out hit, castDistance, _layersToIgnore))
         {
             return false;
         }
@@ -240,7 +223,7 @@ public class PlayerMovement : NetworkBehaviour
         {
             RaycastHit hit;
             Vector3 startPos = transform.position - new Vector3(0, controller.height / 2, 0);
-            if (Physics.Raycast(startPos, Vector3.down, out hit, 0.301f, layersToIgnore, QueryTriggerInteraction.Ignore) && hit.normal.y > 0.7f)
+            if (Physics.Raycast(startPos, Vector3.down, out hit, 0.301f, _layersToIgnore, QueryTriggerInteraction.Ignore) && hit.normal.y > 0.7f)
             {
                 Vector3 clippedVelocity = ClipVelocity(hit.normal);
                 clippedVelocity.y = 0;
@@ -314,6 +297,8 @@ public class PlayerMovement : NetworkBehaviour
         return inputDirection.z < 0;
     }
     #endregion
+
+    #region FixedUpdate Physics calculations
 
     //wishDir: the direction the player wishes to go in the newest frame
     //wishSpeed: the speed the player wishes to go this frame
@@ -411,6 +396,9 @@ public class PlayerMovement : NetworkBehaviour
         return toReturn;
     }
 
+    #endregion
+
+    #region NoClip
     public void NoClip()
     {
         isNoClipping = !isNoClipping;
@@ -442,6 +430,8 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
+    #endregion
+    
     #region SoundChecks
     private void CheckGravitySound()
     {
@@ -471,15 +461,5 @@ public class PlayerMovement : NetworkBehaviour
     #endregion
 
 
-    #region  RPCs
-
-    [ServerRpc]
-    public void MovementServerRpc(PlayerMovementInputs input)
-    {
-        requestCrouch.Value = input.requestCrouch;
-        requestedPosition.Value = input.requestedPosition;
-        requestedRotation.Value = input.requestedRotation;
-    }
-
-    #endregion
+    
 }
