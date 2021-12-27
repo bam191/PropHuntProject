@@ -36,6 +36,7 @@ public class PlayerShooting : MonoBehaviour
 
             if (networkObject != null)
             {
+                InformPlayerHit();
                 Debug.Log($"enemy hit!: {networkObject.OwnerClientId}");
             }
             else
@@ -43,6 +44,12 @@ public class PlayerShooting : MonoBehaviour
                 Debug.LogError("Hit an object on the player layer without a network object script attached");
             }
         }
+    }
+
+    [ClientRpc]
+    private void InformPlayerHit()
+    {
+        
     }
 
     #endregion

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5256364058285338302}
   - component: {fileID: 869159078929586462}
   - component: {fileID: 1302986198309007465}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 1075421326785116487}
   - component: {fileID: 1778184613064164948}
   - component: {fileID: 1551959711743296789}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 1529023470615383747}
   - component: {fileID: 6761713185607116896}
   - component: {fileID: 3220696843504710634}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LocalPlayerModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 8723055798870122141}
   - component: {fileID: 7142592812072318501}
   - component: {fileID: 5152061565840185014}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Camera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,7 +347,7 @@ GameObject:
   - component: {fileID: 324592808169022508}
   - component: {fileID: 4182619195112820660}
   - component: {fileID: 6240107846390329661}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -432,7 +432,7 @@ GameObject:
   - component: {fileID: 8692858742597719795}
   - component: {fileID: 7087779553574389501}
   - component: {fileID: 6830165111272445484}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LocalPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -472,11 +472,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   _playerController: {fileID: 8320045152706876434}
-  velocityToApply: {x: 0, y: 0, z: 0}
-  currentInput: {x: 0, y: 0, z: 0}
-  grounded: 0
-  crouching: 0
-  controller: {fileID: 7087779553574389501}
 --- !u!114 &8692858742597719795
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -536,7 +531,7 @@ GameObject:
   - component: {fileID: 4684639374167112092}
   - component: {fileID: 3236404887027986654}
   - component: {fileID: 2344959046605750080}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +614,7 @@ GameObject:
   - component: {fileID: 4174997177973782440}
   - component: {fileID: 1861739196851973634}
   - component: {fileID: 4146426962844462644}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -702,7 +697,7 @@ GameObject:
   - component: {fileID: 6155936059021333518}
   - component: {fileID: 7200507032590759486}
   - component: {fileID: 3402178814261053975}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ServerPlayerModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -787,7 +782,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3067293720168825112}
   - component: {fileID: 7850077683257062543}
-  m_Layer: 0
+  - component: {fileID: 2019426864964369368}
+  m_Layer: 6
   m_Name: ServerPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -801,7 +797,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7442461839942256020}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -823,6 +819,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerController: {fileID: 8320045152706876434}
+--- !u!65 &2019426864964369368
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7442461839942256020}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7941105817486019377
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,7 +843,7 @@ GameObject:
   - component: {fileID: 7941105817486019388}
   - component: {fileID: 7941105817486019376}
   - component: {fileID: 8320045152706876434}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -849,7 +858,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7941105817486019377}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 537.684, y: 303.91522, z: -13.313248}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -905,7 +914,7 @@ GameObject:
   - component: {fileID: 4861400475238713711}
   - component: {fileID: 1737180356182665713}
   - component: {fileID: 274508230796988783}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
