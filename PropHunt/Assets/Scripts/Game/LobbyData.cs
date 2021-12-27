@@ -24,7 +24,7 @@ public struct LobbyData
     {
         LobbyData lobbyData = new LobbyData();
 
-        int size = Marshal.SizeOf(bytes);
+        int size = Marshal.SizeOf(lobbyData);
         IntPtr ptr = Marshal.AllocHGlobal(size);
 
         Marshal.Copy(bytes, 0, ptr, size);

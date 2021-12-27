@@ -28,7 +28,7 @@ public struct ClientData
     {
         ClientData clientData = new ClientData();
 
-        int size = Marshal.SizeOf(bytes);
+        int size = Marshal.SizeOf(clientData);
         IntPtr ptr = Marshal.AllocHGlobal(size);
 
         Marshal.Copy(bytes, 0, ptr, size);
