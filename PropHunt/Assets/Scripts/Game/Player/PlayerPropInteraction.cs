@@ -8,6 +8,7 @@ public class PlayerPropInteraction : MonoBehaviour
     private MeshFilter _myMeshFilter;
     private PlayerController _playerController;
     private PlayerCameraController _playerCameraController;
+    [SerializeField] private PlayerModelController _playerModelController;
     
     private const float propInteractionDistance = 2;
     [SerializeField] private LayerMask propLayerMask;
@@ -31,10 +32,7 @@ public class PlayerPropInteraction : MonoBehaviour
             Ray ray = _playerCameraController.playerCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var raycastHit, propInteractionDistance, propLayerMask))
             {
-                GameObject propPrefab = Resources.Load<GameObject>($"Props/{raycastHit.collider.gameObject.name}");
-                GameObject propInstance = Instantiate(propPrefab, transform);
-                propInstance.transform.localPosition = Vector3.zero;
-                
+                _playerModelController.SetModel($"Props/{raycastHit.collider.gameObject.name}");
             }
         }
     }

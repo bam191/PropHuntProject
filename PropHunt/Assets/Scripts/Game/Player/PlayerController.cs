@@ -8,6 +8,7 @@ public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private GameObject _localPlayer;
     [SerializeField] private GameObject _serverPlayer;
+    private PlayerModelController _playerModelController;
     
     public NetworkVariable<bool> requestCrouch;
     public NetworkVariable<Vector3> requestedPosition;
@@ -18,6 +19,12 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> deaths = new NetworkVariable<int>(0);
 
     public NetworkVariable<eTeam> team;
+
+    private void Awake()
+    {
+        _playerModelController = GetComponentInChildren<PlayerModelController>();
+    }
+
     private void Start()
     {
         GameController.Instance.RegisterPlayer(this);
@@ -37,6 +44,8 @@ public class PlayerController : NetworkBehaviour
     public void SetTeam(eTeam team)
     {
         this.team.Value = team;
+
+        _playerModelController.SetTeam(team);
     }
     
     #region  RPCs

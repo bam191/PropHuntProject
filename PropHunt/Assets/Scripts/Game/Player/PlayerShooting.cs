@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class PlayerShooting : NetworkBehaviour
 {
-    [SerializeField] private PlayerCameraController _playerCameraController;
     [SerializeField] private const float shootDistance = 1000;
     [SerializeField] private LayerMask playerLayerMask;
-    
+    private PlayerCameraController _playerCameraController;
+
     void Start()
     {
         _playerCameraController = GetComponent<PlayerCameraController>();
