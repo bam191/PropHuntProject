@@ -24,12 +24,16 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool isNoClipping;
 
-    private NetworkVariable<bool> requestJump;
+    //private NetworkVariable<bool> requestJump;
     private NetworkVariable<bool> requestCrouch;
-    private NetworkVariable<bool> requestLeft;
-    private NetworkVariable<bool> requestRight;
-    private NetworkVariable<bool> requestBack;
-    private NetworkVariable<bool> requestForward;
+    // private NetworkVariable<bool> requestLeft;
+    // private NetworkVariable<bool> requestRight;
+    // private NetworkVariable<bool> requestBack;
+    // private NetworkVariable<bool> requestForward;
+    // private NetworkVariable<float> cameraYRotation;
+    private NetworkVariable<Vector3> requestedPosition;
+    private NetworkVariable<Vector3> requestedRotation;
+    
 
     private PlayerMovementInputs _currentInputs;
     private PlayerMovementInputs _lastInputs;
@@ -52,31 +56,38 @@ public class PlayerMovement : NetworkBehaviour
     // All input checking going in Update, so no Input queries are missed
     private void Update()
     {
-        if (isNoClipping)
-        {
-            NoClipMove();
-            return;
-        }
-
-        SetGrounded();
-        CheckCrouch();
-
-        ApplyGravity();
-
-        CheckJump();
-
-        currentInput = GetWorldSpaceInputVector();
-        controller.Move(velocityToApply * Time.deltaTime);
-
-        CheckFootstepSound();
-
         if (IsLocalPlayer)
         {
+            if (isNoClipping)
+            {
+                NoClipMove();
+                return;
+            }
+
+            SetGrounded();
+            CheckCrouch();
+
+            ApplyGravity();
+
+            CheckJump();
+
+            currentInput = GetWorldSpaceInputVector();
+            controller.Move(velocityToApply * Time.deltaTime);
+
+            CheckFootstepSound();
+            
+            _currentInputs.requestedPosition = gameObject.transform.position;
+            _currentInputs.requestedRotation = gameObject.transform.rotation.eulerAngles;
             if (!_currentInputs.Equals(_lastInputs))
             {
                 MovementServerRpc(_currentInputs);
                 _lastInputs = _currentInputs;
             }
+        }
+        else
+        {
+            transform.position = _currentInputs.requestedPosition;
+            transform.rotation = Quaternion.Euler(_currentInputs.requestedRotation);
         }
         
     }
@@ -229,12 +240,12 @@ public class PlayerMovement : NetworkBehaviour
         if (IsLocalPlayer)
         {
             shouldJump = InputManager.GetKey(PlayerConstants.Jump);
-            _currentInputs.requestJump = shouldJump;
+            //_currentInputs.requestJump = shouldJump;
         }
-        else
-        {
-            shouldJump = requestJump.Value;
-        }
+        // else
+        // {
+        //     shouldJump = requestJump.Value;
+        // }
 
         if (grounded && shouldJump)
         {
@@ -286,24 +297,24 @@ public class PlayerMovement : NetworkBehaviour
         if (IsLocalPlayer)
         {
             shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
-            _currentInputs.requestLeft = shouldMoveLeft;
+            //_currentInputs.requestLeft = shouldMoveLeft;
             
             shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
-            _currentInputs.requestRight = shouldMoveRight;
+            //_currentInputs.requestRight = shouldMoveRight;
             
             shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
-            _currentInputs.requestBack = shouldMoveBack;
+            //_currentInputs.requestBack = shouldMoveBack;
             
             shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
-            _currentInputs.requestForward = shouldMoveForward;
+            //_currentInputs.requestForward = shouldMoveForward;
         }
-        else
-        {
-            shouldMoveLeft = requestLeft.Value;
-            shouldMoveRight = requestRight.Value;
-            shouldMoveBack = requestBack.Value;
-            shouldMoveForward = requestForward.Value;
-        }
+        // else
+        // {
+        //     shouldMoveLeft = requestLeft.Value;
+        //     shouldMoveRight = requestRight.Value;
+        //     shouldMoveBack = requestBack.Value;
+        //     shouldMoveForward = requestForward.Value;
+        // }
         
         if (shouldMoveLeft)
         {
@@ -447,24 +458,24 @@ public class PlayerMovement : NetworkBehaviour
         if (IsLocalPlayer)
         {
             shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
-            _currentInputs.requestLeft = shouldMoveLeft;
+            //_currentInputs.requestLeft = shouldMoveLeft;
             
             shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
-            _currentInputs.requestRight = shouldMoveRight;
+            //_currentInputs.requestRight = shouldMoveRight;
             
             shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
-            _currentInputs.requestBack = shouldMoveBack;
+            //_currentInputs.requestBack = shouldMoveBack;
             
             shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
-            _currentInputs.requestForward = shouldMoveForward;
+            //_currentInputs.requestForward = shouldMoveForward;
         }
-        else
-        {
-            shouldMoveLeft = requestLeft.Value;
-            shouldMoveRight = requestRight.Value;
-            shouldMoveBack = requestBack.Value;
-            shouldMoveForward = requestForward.Value;
-        }
+        // else
+        // {
+        //     shouldMoveLeft = requestLeft.Value;
+        //     shouldMoveRight = requestRight.Value;
+        //     shouldMoveBack = requestBack.Value;
+        //     shouldMoveForward = requestForward.Value;
+        // }
         
         if (shouldMoveForward)
         {
@@ -518,12 +529,15 @@ public class PlayerMovement : NetworkBehaviour
     [ServerRpc]
     public void MovementServerRpc(PlayerMovementInputs input)
     {
-        requestForward.Value = input.requestForward;
-        requestBack.Value = input.requestBack;
-        requestLeft.Value = input.requestLeft;
-        requestRight.Value = input.requestRight;
-        requestJump.Value = input.requestJump;
+        // requestForward.Value = input.requestForward;
+        // requestBack.Value = input.requestBack;
+        // requestLeft.Value = input.requestLeft;
+        // requestRight.Value = input.requestRight;
+        // requestJump.Value = input.requestJump;
         requestCrouch.Value = input.requestCrouch;
+        // cameraYRotation.Value = input.cameraYRotation;
+        requestedPosition.Value = input.requestedPosition;
+        requestedRotation.Value = input.requestedRotation;
     }
 
     #endregion
