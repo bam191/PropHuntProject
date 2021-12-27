@@ -28,7 +28,7 @@ public class ConnectionController : MonoBehaviour
         _unetTransport.ConnectPort = _defaultPort;
         _unetTransport.ServerListenPort = _defaultPort;
 
-        _networkManager.StartClient();
+        LobbyController.Instance.StartClient();
     }
 
     public void HostServer()
@@ -37,7 +37,7 @@ public class ConnectionController : MonoBehaviour
         _unetTransport.ConnectPort = _defaultPort;
         _unetTransport.ServerListenPort = _defaultPort;
 
-        _networkManager.StartHost();
+        LobbyController.Instance.StartHost();        
     }
 
     private void EnsureNetworkManagerExists()

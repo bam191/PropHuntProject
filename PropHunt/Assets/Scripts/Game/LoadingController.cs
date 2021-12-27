@@ -4,26 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoadingController : MonoBehaviour
+public class LoadingController : Singleton<LoadingController>
 {
-    private static LoadingController _instance;
-    public static LoadingController Instance
-    {
-        get
-        {
-            return _instance;
-        }
-    }
-
     private const string GAME_SCENE_NAME = "Game";
 
     private Scene? _loadedLevel;
 
-    private void Awake()
+    public override void Initialize()
     {
-        _instance = this;
-
         DontDestroyOnLoad(gameObject);
+
+        base.Initialize();
     }
 
     public void LoadGameScene()

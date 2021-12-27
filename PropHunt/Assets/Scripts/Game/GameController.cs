@@ -3,26 +3,13 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GameController : MonoBehaviour
+public class GameController : Singleton<GameController>
 {
-    private static GameController _instance;
-    public static GameController Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = GameObject.FindObjectOfType<GameController>(true);
-            }
-
-            return _instance;
-        }
-    }
-
     private NetworkManager _networkManager;
 
-    private void Awake()
+    public override void Initialize()
     {
         _networkManager = NetworkManager.Singleton;
+        base.Initialize();
     }
 }
