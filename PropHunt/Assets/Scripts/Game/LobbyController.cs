@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UNET;
 using UnityEngine;
+using static Unity.Netcode.NetworkManager;
 
 public class LobbyController : Singleton<LobbyController>
 {
@@ -22,6 +23,7 @@ public class LobbyController : Singleton<LobbyController>
         _unetTransport = _networkManager?.GetComponent<UNetTransport>();
         _loadingController = LoadingController.Instance;
         _networkConfig = _networkManager.NetworkConfig;
+        _networkManager.ConnectionApprovalCallback += ConnectionApproval;
 
         AddListeners();
 
@@ -50,6 +52,11 @@ public class LobbyController : Singleton<LobbyController>
         _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
         _networkManager.StartClient();
         LoadingController.Instance.LoadGameScene();
+    }
+
+    public void ConnectionApproval(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate connectionApprovedDelegate)
+    {
+        Debug.LogError(ClientData.FromBytes(connectionData).Username);
     }
 
     public void Disconnect()
