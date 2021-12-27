@@ -16,13 +16,18 @@ public class MainMenuController : Singleton<MainMenuController>
     [SerializeField] private Button _serverBrowserButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _quitButton;
-    [SerializeField] private SettingsPopup _connectionPopup;
-    [SerializeField] private SettingsPopup _settingPopup;
+    
+    [SerializeField] private Popup _connectionPopup;
+    
+    private Popup _settingsPopup;
+    [SerializeField] private Transform _settingsParent;
+    [SerializeField] private GameObject _settingsPopupPrefab;
 
     private eMainMenuState _currentState = eMainMenuState.None;
 
     public override void Initialize()
     {
+        InitSettings();
         SetState(eMainMenuState.MainMenu);
     }
 
@@ -32,7 +37,7 @@ public class MainMenuController : Singleton<MainMenuController>
 
         EnableButtons(false);
         _connectionPopup.Hide();
-        _settingPopup.Hide();
+        _settingsPopup.Hide();
 
         switch (state)
         {
@@ -43,7 +48,7 @@ public class MainMenuController : Singleton<MainMenuController>
                 _connectionPopup.Show();
                 break;
             case eMainMenuState.SettingsPopup:
-                _settingPopup.Show();
+                _settingsPopup.Show();
                 break;
         }
 
@@ -75,5 +80,12 @@ public class MainMenuController : Singleton<MainMenuController>
     public void OnQuitButtonPressed()
     {
         Application.Quit();
+    }
+    
+    private void InitSettings()
+    {
+        GameObject settingsInstance = Instantiate(_settingsPopupPrefab, _settingsParent);
+        _settingsPopup = settingsInstance.GetComponent<SettingsPopup>();
+        _settingsPopup.OnHide += () => SetState(eMainMenuState.MainMenu);
     }
 }
