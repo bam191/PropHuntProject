@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [Serializable]
 public struct ClientData
 {
-    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 100)]
     public string Username;
     public ulong ClientId;
 

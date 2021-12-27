@@ -44,6 +44,10 @@ public class LobbyController : Singleton<LobbyController>
         if (_isHosting) return;
 
         _isHosting = true;
+        _clientData = new ClientData();
+        _clientData.Username = "alexi";
+
+        _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
         _networkManager.StartHost();
         LoadingController.Instance.LoadGameScene();
     }
@@ -52,7 +56,7 @@ public class LobbyController : Singleton<LobbyController>
     {
         _clientData = new ClientData();
         _clientData.Username = "alexi";
-        
+
         _networkConfig.ConnectionData = ClientData.GetBytes(_clientData);
         _networkManager.StartClient();
         LoadingController.Instance.LoadGameScene();
