@@ -5,22 +5,17 @@ using UnityEngine;
 
 public class PlayerMovement : NetworkBehaviour
 {
-    [Header("Set In Editor")]
     [SerializeField] private LayerMask _layersToIgnore;
     [SerializeField] private PlayerController _playerController; 
 
-    [Header("Debugging properties")]
     //The velocity applied at the end of every physics frame
-    public Vector3 velocityToApply;
-    public Vector3 currentInput;
+    private Vector3 velocityToApply;
+    private Vector3 currentInput;
 
-    [SerializeField]
     private bool grounded;
-
-    [SerializeField]
     private bool crouching;
 
-    public CharacterController controller;
+    private CharacterController controller;
     private CameraMove cameraMove;
 
     private bool isNoClipping;
