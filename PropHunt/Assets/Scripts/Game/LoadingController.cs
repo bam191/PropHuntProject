@@ -10,9 +10,12 @@ public class LoadingController : Singleton<LoadingController>
 
     private Scene? _loadedLevel;
 
+    public Action OnSceneLoadedCallback;
+
     public override void Initialize()
     {
         DontDestroyOnLoad(gameObject);
+        SceneManager.sceneLoaded += OnExternalSceneLoaded;
 
         base.Initialize();
     }
@@ -35,6 +38,11 @@ public class LoadingController : Singleton<LoadingController>
         {
             InternalLoadLevel(levelName);
         }
+    }
+
+    private void OnExternalSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {
+        OnSceneLoadedCallback?.Invoke();
     }
 
     private void InternalLoadLevel(string levelName)
