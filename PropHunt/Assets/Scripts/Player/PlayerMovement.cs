@@ -24,13 +24,7 @@ public class PlayerMovement : NetworkBehaviour
 
     private bool isNoClipping;
 
-    //private NetworkVariable<bool> requestJump;
     private NetworkVariable<bool> requestCrouch;
-    // private NetworkVariable<bool> requestLeft;
-    // private NetworkVariable<bool> requestRight;
-    // private NetworkVariable<bool> requestBack;
-    // private NetworkVariable<bool> requestForward;
-    // private NetworkVariable<float> cameraYRotation;
     private NetworkVariable<Vector3> requestedPosition;
     private NetworkVariable<Vector3> requestedRotation;
     
@@ -240,12 +234,7 @@ public class PlayerMovement : NetworkBehaviour
         if (IsLocalPlayer)
         {
             shouldJump = InputManager.GetKey(PlayerConstants.Jump);
-            //_currentInputs.requestJump = shouldJump;
         }
-        // else
-        // {
-        //     shouldJump = requestJump.Value;
-        // }
 
         if (grounded && shouldJump)
         {
@@ -290,32 +279,11 @@ public class PlayerMovement : NetworkBehaviour
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
-        bool shouldMoveLeft = false;
-        bool shouldMoveRight = false;
-        bool shouldMoveBack = false;
-        bool shouldMoveForward = false;
-        if (IsLocalPlayer)
-        {
-            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
-            //_currentInputs.requestLeft = shouldMoveLeft;
-            
-            shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
-            //_currentInputs.requestRight = shouldMoveRight;
-            
-            shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
-            //_currentInputs.requestBack = shouldMoveBack;
-            
-            shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
-            //_currentInputs.requestForward = shouldMoveForward;
-        }
-        // else
-        // {
-        //     shouldMoveLeft = requestLeft.Value;
-        //     shouldMoveRight = requestRight.Value;
-        //     shouldMoveBack = requestBack.Value;
-        //     shouldMoveForward = requestForward.Value;
-        // }
-        
+        bool shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+        bool shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
+        bool shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+        bool shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
+
         if (shouldMoveLeft)
         {
             horizontalSpeed -= moveSpeed;
@@ -451,31 +419,10 @@ public class PlayerMovement : NetworkBehaviour
 
     private void NoClipMove()
     {
-        bool shouldMoveLeft = false;
-        bool shouldMoveRight = false;
-        bool shouldMoveBack = false;
-        bool shouldMoveForward = false;
-        if (IsLocalPlayer)
-        {
-            shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
-            //_currentInputs.requestLeft = shouldMoveLeft;
-            
-            shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
-            //_currentInputs.requestRight = shouldMoveRight;
-            
-            shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
-            //_currentInputs.requestBack = shouldMoveBack;
-            
-            shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
-            //_currentInputs.requestForward = shouldMoveForward;
-        }
-        // else
-        // {
-        //     shouldMoveLeft = requestLeft.Value;
-        //     shouldMoveRight = requestRight.Value;
-        //     shouldMoveBack = requestBack.Value;
-        //     shouldMoveForward = requestForward.Value;
-        // }
+        bool shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
+        bool shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
+        bool shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
+        bool shouldMoveForward = InputManager.GetKey(PlayerConstants.Forward);
         
         if (shouldMoveForward)
         {
@@ -529,13 +476,7 @@ public class PlayerMovement : NetworkBehaviour
     [ServerRpc]
     public void MovementServerRpc(PlayerMovementInputs input)
     {
-        // requestForward.Value = input.requestForward;
-        // requestBack.Value = input.requestBack;
-        // requestLeft.Value = input.requestLeft;
-        // requestRight.Value = input.requestRight;
-        // requestJump.Value = input.requestJump;
         requestCrouch.Value = input.requestCrouch;
-        // cameraYRotation.Value = input.cameraYRotation;
         requestedPosition.Value = input.requestedPosition;
         requestedRotation.Value = input.requestedRotation;
     }
