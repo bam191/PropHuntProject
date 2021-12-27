@@ -24,6 +24,8 @@ public class LoadingController : Singleton<LoadingController>
 
     private void Update()
     {
+        if (!NetworkManager.Singleton.IsServer) return;
+        
         if (Input.GetKeyDown("f"))
         {
             LoadServerLevel("TestLevel");
@@ -42,82 +44,37 @@ public class LoadingController : Singleton<LoadingController>
 
     public void LoadServerLevel(string levelName)
     {
+        StartCoroutine(LoadLevelCoroutine(levelName));
+    }
+
+    private IEnumerator LoadLevelCoroutine(string levelName)
+    {
+        SceneEventProgressStatus sceneProgressStatus = SceneEventProgressStatus.None;
+
         if (_loadedLevel != null)
         {
-            UnloadCurrentServerLevel();
-            InternalLoadServerLevel(levelName);
-        }
-        else
-        {
-            InternalLoadServerLevel(levelName);
-        }
-    }
-
-    private void InternalLoadServerLevel(string levelName)
-    {
-        NetworkManager.Singleton.SceneManager.OnLoadComplete += OnServerSceneLoaded;
-        NetworkManager.Singleton.SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
-        Debug.LogError("load scene " + levelName);
-    }
-
-    private void OnServerSceneLoaded(ulong clientId, string levelName, LoadSceneMode loadSceneMode)
-    {
-        Debug.LogError("on loaded " + levelName);
-        NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnServerSceneLoaded;
-        _loadedLevel = SceneManager.GetSceneByName(levelName);
-    }
-
-    public void LoadLevel(string levelName)
-    {
-        if (_loadedLevel != null)
-        {
-            UnloadCurrentLevel((_) => 
+            while (sceneProgressStatus != SceneEventProgressStatus.Started)
             {
-                InternalLoadLevel(levelName);
-            });
+                sceneProgressStatus = NetworkManager.Singleton.SceneManager.UnloadScene((Scene)_loadedLevel);
+                yield return null;
+            }
+
+            _loadedLevel = null;
         }
-        else
+
+        sceneProgressStatus = SceneEventProgressStatus.None;
+
+        while(sceneProgressStatus != SceneEventProgressStatus.Started)
         {
-            InternalLoadLevel(levelName);
+            sceneProgressStatus = NetworkManager.Singleton.SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
+            yield return null;
         }
+
+        _loadedLevel = SceneManager.GetSceneByName(levelName);
     }
 
     private void OnExternalSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
     {
         OnSceneLoadedCallback?.Invoke();
-    }
-
-    private void InternalLoadLevel(string levelName)
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-        SceneManager.LoadScene(levelName, LoadSceneMode.Additive);
-    }
-    
-    private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        _loadedLevel = scene;
-    }
-
-    private void OnSceneUnloaded(Scene scene)
-    {
-        if (scene == _loadedLevel)
-        {
-            _loadedLevel = null;
-        }
-    }
-
-    private void UnloadCurrentLevel(Action<AsyncOperation> onUnloaded)
-    {
-        SceneManager.sceneUnloaded += OnSceneUnloaded;
-        SceneManager.UnloadSceneAsync((Scene)_loadedLevel).completed += onUnloaded;
-    }
-
-    private void UnloadCurrentServerLevel()
-    {
-        Debug.LogError("server unloading " + _loadedLevel?.name);
-        NetworkManager.Singleton.SceneManager.UnloadScene((Scene)_loadedLevel);
-        _loadedLevel = null;
-        //onUnloaded?.Invoke(null);
     }
 }
