@@ -19,8 +19,13 @@ public class SpawnPoint : LevelObject
     public int Priority => _priority;
     public eTeam Team => _team;
 
-    private void Awake()
+    private void Start()
     {
-        //todo: register spawn point with level controller
+        SpawnController.Instance.RegisterSpawnPoint(this);
+    }
+
+    private void OnDestroy()
+    {
+        SpawnController.Instance.DeregisterSpawnPoint(this);
     }
 }
