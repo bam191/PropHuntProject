@@ -23,4 +23,9 @@ public class SpawnPoint : LevelObject
     {
         SpawnController.Instance.RegisterSpawnPoint(this);
     }
+
+    private void OnDestroy()
+    {
+        SpawnController.Instance.DeregisterSpawnPoint(this);
+    }
 }

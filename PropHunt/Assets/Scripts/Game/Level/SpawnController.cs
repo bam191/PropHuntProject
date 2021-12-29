@@ -24,6 +24,31 @@ public class SpawnController : Singleton<SpawnController>
         _availablePoints.OrderBy(x => x.Priority);
     }
 
+    public void DeregisterSpawnPoint(SpawnPoint spawnPoint)
+    {
+        if (_availablePoints.Contains(spawnPoint))
+        {
+            _availablePoints.Remove(spawnPoint);
+        }
+
+        if (_spawnPoints.Contains(spawnPoint))
+        {
+            _spawnPoints.Remove(spawnPoint);
+        }
+
+        if (_usedPoints.Contains(spawnPoint))
+        {
+            _usedPoints.Remove(spawnPoint);
+        }
+    }
+
+    public void ResetSpawnPoints()
+    {
+        _availablePoints.Clear();
+        _availablePoints.AddRange(_spawnPoints);
+        _availablePoints.OrderBy(x => x.Priority);
+    }
+
     public SpawnPoint GetSpawnPoint(SpawnPoint.eTeam team, bool tryReset = true)
     {
         foreach(SpawnPoint spawnPoint in _availablePoints)
