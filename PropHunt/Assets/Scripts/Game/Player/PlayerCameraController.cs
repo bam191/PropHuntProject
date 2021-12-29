@@ -54,7 +54,7 @@ public class PlayerCameraController : MonoBehaviour
 
         Quaternion newRotation = TargetRotation;
         newRotation.eulerAngles = new Vector3(0, newRotation.eulerAngles.y, 0);
-        playerModel.transform.rotation = newRotation;
+        transform.rotation = newRotation;
     }
 
     public void ResetTargetRotation(Quaternion target)

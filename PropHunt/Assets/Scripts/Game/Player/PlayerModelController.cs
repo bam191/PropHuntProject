@@ -6,6 +6,7 @@ public class PlayerModelController : MonoBehaviour
 {
     private const string baseHunterModel = "Props/BaseHunterModel";
     private const string basePropModel = "Props/BasePropModel";
+    
     void Start()
     {
         

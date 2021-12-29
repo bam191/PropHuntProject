@@ -8,21 +8,24 @@ public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private GameObject _localPlayer;
     [SerializeField] private GameObject _serverPlayer;
+
     private PlayerModelController _playerModelController;
+    private PlayerAnimationController _playerAnimationController;
     
-    public NetworkVariable<bool> requestCrouch;
-    public NetworkVariable<Vector3> requestedPosition;
-    public NetworkVariable<Vector3> requestedRotation;
+    public NetworkVariable<bool> _requestCrouch;
+    public NetworkVariable<Vector3> _requestedPosition;
+    public NetworkVariable<Vector3> _requestedRotation;
     
-    public NetworkVariable<int> health = new NetworkVariable<int>(100);
-    public NetworkVariable<int> kills = new NetworkVariable<int>(0);
-    public NetworkVariable<int> deaths = new NetworkVariable<int>(0);
+    public NetworkVariable<int> _health = new NetworkVariable<int>(100);
+    public NetworkVariable<int> _kills = new NetworkVariable<int>(0);
+    public NetworkVariable<int> _deaths = new NetworkVariable<int>(0);
 
     public NetworkVariable<eTeam> team;
 
     private void Awake()
     {
         _playerModelController = GetComponentInChildren<PlayerModelController>();
+        _playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
     }
 
     private void Start()
@@ -47,15 +50,20 @@ public class PlayerController : NetworkBehaviour
 
         _playerModelController.SetTeam(team);
     }
+
+    public void SetVelocity(Vector3 velocity)
+    {
+        _playerAnimationController.SetVelocity(velocity);
+    }
     
     #region  RPCs
 
     [ServerRpc]
     public void MovementServerRpc(PlayerMovementInputs input)
     {
-        requestCrouch.Value = input.requestCrouch;
-        requestedPosition.Value = input.requestedPosition;
-        requestedRotation.Value = input.requestedRotation;
+        _requestCrouch.Value = input.requestCrouch;
+        _requestedPosition.Value = input.requestedPosition;
+        _requestedRotation.Value = input.requestedRotation;
     }
 
     #endregion

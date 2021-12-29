@@ -25,10 +25,10 @@ public static class PlayerConstants
     public static float NormalSurfaceFriction = 1f;
 
     public static float StandingPlayerHeight = 2f;
-    public static Vector3 StandingCameraOffset = new Vector3(0, -0.25f, 0);
+    public static Vector3 StandingCameraOffset = new Vector3(0, 1.638f, 0);
 
     public static float CrouchingPlayerHeight = 1f;
-    public static Vector3 CrouchingCameraOffset = new Vector3(0, -0.65f, 0);
+    public static Vector3 CrouchingCameraOffset = new Vector3(0, 1, 0);
     public static float PlayerColliderRadius = 0.5f;
 
     //HotKeys

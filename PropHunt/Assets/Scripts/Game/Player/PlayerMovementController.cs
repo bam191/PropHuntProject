@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerMovementController : NetworkBehaviour
 {
     [SerializeField] private LayerMask _layersToIgnore;
-    [SerializeField] private PlayerController _playerController; 
+    [SerializeField] private PlayerController _playerController;
 
     //The velocity applied at the end of every physics frame
     private Vector3 velocityToApply;
@@ -67,6 +67,7 @@ public class PlayerMovementController : NetworkBehaviour
             _lastInputs = _currentInputs;
         }
         
+        _playerController.SetVelocity(velocityToApply);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -132,7 +133,7 @@ public class PlayerMovementController : NetworkBehaviour
         }
         else
         {
-            shouldCrouch = _playerController.requestCrouch.Value;
+            shouldCrouch = _playerController._requestCrouch.Value;
         }
         
         if (shouldCrouch)
