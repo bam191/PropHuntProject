@@ -13,6 +13,15 @@ public class PlayerWeaponController : NetworkBehaviour
     private bool _canSwitchWeapons = true;
 
     private Gun _equippedGun;
+    public NetworkVariable<eGunType> _networkEquippedGun;
+
+    private void Start()
+    {
+        if (!IsOwner)
+        {
+            EquipServerSideGun();
+        }
+    }
 
     private bool CanSwitchWeapons()
     {
@@ -65,6 +74,7 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         _serverGunController.SetGunState(gunType);
         _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+        _networkEquippedGun.Value = gunType;
 
         EquipGunClientRpc(gunType);
     }
@@ -75,5 +85,10 @@ public class PlayerWeaponController : NetworkBehaviour
         if(IsOwner) return;
 
         _serverGunController.SetGunState(gunType);
+    }
+
+    private void EquipServerSideGun()
+    {
+        _serverGunController.SetGunState(_networkEquippedGun.Value);
     }
 }
