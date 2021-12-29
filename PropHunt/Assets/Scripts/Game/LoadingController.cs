@@ -9,6 +9,7 @@ using static Unity.Netcode.NetworkSceneManager;
 public class LoadingController : Singleton<LoadingController>
 {
     private const string GAME_SCENE_NAME = "Game";
+    private const string MAIN_MENU_SCENE_NAME = "MainMenu";
 
     private Scene? _loadedLevel;
 
@@ -40,6 +41,20 @@ public class LoadingController : Singleton<LoadingController>
     public void LoadGameScene()
     {
         SceneManager.LoadScene(GAME_SCENE_NAME, LoadSceneMode.Single);
+    }
+
+    public void LoadMainMenu()
+    {
+        if (NetworkManager.Singleton.IsHost)
+        {
+            LobbyController.Instance.Disconnect();
+        }
+
+        else
+        {
+            
+        }
+        SceneManager.LoadScene(MAIN_MENU_SCENE_NAME, LoadSceneMode.Single);
     }
 
     public void LoadServerLevel(string levelName)

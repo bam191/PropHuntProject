@@ -1640,6 +1640,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentState: 0
+  _lobbySettingsPrefab: {fileID: 5601743241921687047, guid: c73b3ce7d0abedb479461b147f78adff,
+    type: 3}
 --- !u!4 &1764127570
 Transform:
   m_ObjectHideFlags: 0

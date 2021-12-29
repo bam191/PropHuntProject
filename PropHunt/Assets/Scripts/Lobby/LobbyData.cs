@@ -8,6 +8,7 @@ using UnityEngine;
 public struct LobbyData
 {
     public int propsPerSeeker;
+    public string mapName;
     
     public static byte[] GetBytes(LobbyData lobbyData)
     {
@@ -35,5 +36,15 @@ public struct LobbyData
         Marshal.FreeHGlobal(ptr);
 
         return lobbyData;
+    }
+    
+    public void SetPropsPerSeeker(int propsPerSeeker)
+    {
+        this.propsPerSeeker = propsPerSeeker;
+    }
+
+    public void SetMap(string mapName)
+    {
+        this.mapName = mapName;
     }
 }

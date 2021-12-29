@@ -15,6 +15,8 @@ public class GameController : Singleton<GameController>
 
     [SerializeField] private eGameState _currentState;
 
+    [SerializeField] private GameObject _lobbySettingsPrefab;
+
     public override void Initialize()
     {
         _networkManager = NetworkManager.Singleton;
@@ -70,6 +72,7 @@ public class GameController : Singleton<GameController>
     private IEnumerator Setup()
     {
         yield return new WaitForSeconds(1);
+        Instantiate(_lobbySettingsPrefab);
         SetState(eGameState.WaitingForPlayers);
     }
 
