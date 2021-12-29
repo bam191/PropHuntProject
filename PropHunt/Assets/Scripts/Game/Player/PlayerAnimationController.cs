@@ -62,11 +62,17 @@ public class PlayerAnimationController : NetworkBehaviour
             _forwardSpeed = Mathf.Lerp(-1f, 1f, (forwardSpeed + PlayerConstants.MoveSpeed) / (PlayerConstants.MoveSpeed * 2));
             _rightSpeed = Mathf.Lerp(-1f, 1, (rightSpeed + PlayerConstants.MoveSpeed) / (PlayerConstants.MoveSpeed * 2));
 
-            _networkForwardSpeed.Value = _forwardSpeed;
-            _networkRightSpeed.Value = _rightSpeed;
-            _networkIsHoldingRifle.Value = _isHoldingRifle;
-            _networkVerticalAim.Value = _verticalAim;
+            SetAnimationValuesServerRpc(_forwardSpeed, _rightSpeed, _isHoldingRifle, _verticalAim);
         }
+    }
+
+    [ServerRpc]
+    private void SetAnimationValuesServerRpc(float forwardSpeed, float rightSpeed, bool isHoldingRifle, float verticalAim)
+    {
+        _networkForwardSpeed.Value = forwardSpeed;
+        _networkRightSpeed.Value = rightSpeed;
+        _networkIsHoldingRifle.Value = isHoldingRifle;
+        _networkVerticalAim.Value = verticalAim;
     }
 
     private void LateUpdate()
