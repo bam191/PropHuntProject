@@ -56,8 +56,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 0.01
+  far clip plane: 500
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -355,6 +355,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _localHunterAnimator: {fileID: 7322100756531312074}
   _serverHunterAnimator: {fileID: 5639776705678795712}
+  _serverHunterNetworkAnimator: {fileID: 0}
   _playerController: {fileID: 8320045152706876434}
 --- !u!1001 &6289059043207793483
 PrefabInstance:
@@ -397,6 +398,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -4.185891
+      objectReference: {fileID: 0}
+    - target: {fileID: 1597506558616386268, guid: 455e7eb72a1700641a80ffe07176b7d5,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1815626046816126239, guid: 455e7eb72a1700641a80ffe07176b7d5,
         type: 3}
