@@ -49,11 +49,11 @@ public class SpawnController : Singleton<SpawnController>
         _availablePoints.OrderBy(x => x.Priority);
     }
 
-    public SpawnPoint GetSpawnPoint(SpawnPoint.eTeam team, bool tryReset = true)
+    public SpawnPoint GetSpawnPoint(eTeam team, bool tryReset = true)
     {
         foreach(SpawnPoint spawnPoint in _availablePoints)
         {
-            if (spawnPoint.Team == team || spawnPoint.Team == SpawnPoint.eTeam.Any || team == SpawnPoint.eTeam.Any)
+            if (spawnPoint.Team == team || spawnPoint.Team == eTeam.Any || team == eTeam.Any)
             {
                 _availablePoints.Remove(spawnPoint);
                 _usedPoints.Add(spawnPoint);
@@ -71,11 +71,11 @@ public class SpawnController : Singleton<SpawnController>
         return null;
     }
 
-    private void ResetAvailablePoints(SpawnPoint.eTeam team)
+    private void ResetAvailablePoints(eTeam team)
     {
         foreach (SpawnPoint spawnPoint in _usedPoints)
         {
-            if (spawnPoint.Team == team || spawnPoint.Team == SpawnPoint.eTeam.Any || team == SpawnPoint.eTeam.Any)
+            if (spawnPoint.Team == team || spawnPoint.Team == eTeam.Any || team == eTeam.Any)
             {
                 _usedPoints.Remove(spawnPoint);
                 _availablePoints.Add(spawnPoint);

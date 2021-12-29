@@ -10,6 +10,7 @@ public struct ClientData
     [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 100)]
     public string Username;
     public ulong ClientId;
+    
 
     public static byte[] GetBytes(ClientData clientData)
     {

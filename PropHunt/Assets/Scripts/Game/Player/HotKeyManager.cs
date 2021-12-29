@@ -57,6 +57,7 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         LoadSavedKey(PlayerConstants.Down, PlayerConstants.DownDefault);
         LoadSavedKey(PlayerConstants.Jump, PlayerConstants.JumpDefault);
         LoadSavedKey(PlayerConstants.Crouch, PlayerConstants.CrouchDefault);
+        LoadSavedKey(PlayerConstants.Interact, PlayerConstants.InteractDefault);
         LoadSavedKey(PlayerConstants.ToggleUI, PlayerConstants.ToggleUIDefault);
         LoadSavedKey(PlayerConstants.ModifierKey, PlayerConstants.ModifierKeyDefault);
     }
@@ -97,6 +98,7 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         AddDefaultKey(PlayerConstants.Down, PlayerConstants.DownDefault);
         AddDefaultKey(PlayerConstants.Jump, PlayerConstants.JumpDefault);
         AddDefaultKey(PlayerConstants.Crouch, PlayerConstants.CrouchDefault);
+        AddDefaultKey(PlayerConstants.Interact, PlayerConstants.InteractDefault);
         AddDefaultKey(PlayerConstants.ToggleUI, PlayerConstants.ToggleUIDefault);
         AddDefaultKey(PlayerConstants.ModifierKey, PlayerConstants.ModifierKeyDefault);
     }
@@ -124,6 +126,7 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         tooltips.Add(PlayerConstants.Down, PlayerConstants.DownTooltip);
         tooltips.Add(PlayerConstants.Jump, PlayerConstants.JumpTooltip);
         tooltips.Add(PlayerConstants.Crouch, PlayerConstants.CrouchTooltip);
+        tooltips.Add(PlayerConstants.Interact, PlayerConstants.InteractTooltip);
         tooltips.Add(PlayerConstants.ToggleUI, PlayerConstants.ToggleUITooltip);
         tooltips.Add(PlayerConstants.ModifierKey, PlayerConstants.ModifierKeyTooltip);
     }
