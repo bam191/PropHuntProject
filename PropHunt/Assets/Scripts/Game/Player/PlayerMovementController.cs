@@ -3,10 +3,10 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerMovement : NetworkBehaviour
+public class PlayerMovementController : NetworkBehaviour
 {
     [SerializeField] private LayerMask _layersToIgnore;
-    [SerializeField] private PlayerController _playerController; 
+    [SerializeField] private PlayerController _playerController;
 
     //The velocity applied at the end of every physics frame
     private Vector3 velocityToApply;
@@ -16,7 +16,7 @@ public class PlayerMovement : NetworkBehaviour
     private bool crouching;
 
     private CharacterController controller;
-    private CameraMove cameraMove;
+    private PlayerCameraController _playerCameraController;
 
     private bool isNoClipping;
 
@@ -35,7 +35,7 @@ public class PlayerMovement : NetworkBehaviour
     private void Start()
     {
         controller = GetComponent<CharacterController>();
-        cameraMove = GetComponent<CameraMove>();
+        _playerCameraController = GetComponent<PlayerCameraController>();
     }
 
     // All input checking going in Update, so no Input queries are missed
@@ -60,13 +60,14 @@ public class PlayerMovement : NetworkBehaviour
         CheckFootstepSound();
         
         _currentInputs.requestedPosition = gameObject.transform.position;
-        _currentInputs.requestedRotation = cameraMove.TargetRotation.eulerAngles;
+        _currentInputs.requestedRotation = _playerCameraController.TargetRotation.eulerAngles;
         if (!_currentInputs.Equals(_lastInputs))
         {
             _playerController.MovementServerRpc(_currentInputs);
             _lastInputs = _currentInputs;
         }
         
+        _playerController.SetVelocity(velocityToApply);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -132,7 +133,7 @@ public class PlayerMovement : NetworkBehaviour
         }
         else
         {
-            shouldCrouch = _playerController.requestCrouch.Value;
+            shouldCrouch = _playerController._requestCrouch.Value;
         }
         
         if (shouldCrouch)
@@ -193,11 +194,11 @@ public class PlayerMovement : NetworkBehaviour
     private void DampenCamera()
     {
         Vector3 endOffset = crouching ? PlayerConstants.CrouchingCameraOffset : PlayerConstants.StandingCameraOffset;
-        Vector3 currentOffset = cameraMove.playerCamera.transform.localPosition;
+        Vector3 currentOffset = _playerCameraController.playerCamera.transform.localPosition;
         float v = 0;
         float yOffset = Mathf.SmoothDamp(currentOffset.y, endOffset.y, ref v, Time.deltaTime);
         Vector3 newOffset = new Vector3(0, yOffset, 0);
-        cameraMove.playerCamera.transform.localPosition = newOffset;
+        _playerCameraController.playerCamera.transform.localPosition = newOffset;
     }
     #endregion
 
@@ -254,7 +255,7 @@ public class PlayerMovement : NetworkBehaviour
         }
 
         //Get the velocity vector in world space coordinates, by rotating around the camera's y-axis
-        return Quaternion.AngleAxis(cameraMove.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
+        return Quaternion.AngleAxis(_playerCameraController.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
     private Vector3 GetInputVelocity(float moveSpeed)
@@ -414,19 +415,19 @@ public class PlayerMovement : NetworkBehaviour
         
         if (shouldMoveForward)
         {
-            transform.position += cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += _playerCameraController.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveBack)
         {
-            transform.position += -cameraMove.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += -_playerCameraController.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveRight)
         {
-            transform.position += cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += _playerCameraController.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveLeft)
         {
-            transform.position += -cameraMove.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += -_playerCameraController.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
     }
 

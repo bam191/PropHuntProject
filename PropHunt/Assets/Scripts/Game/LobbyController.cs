@@ -15,6 +15,8 @@ public class LobbyController : Singleton<LobbyController>
     private ClientData _clientData;
     private LobbyData _lobbyData;
 
+    public LobbyData LobbyData => _lobbyData;
+
     private bool _isHosting;
 
     public override void Initialize()
@@ -31,6 +33,11 @@ public class LobbyController : Singleton<LobbyController>
 
         DontDestroyOnLoad(gameObject);
         base.Initialize();
+
+        _lobbyData = new LobbyData()
+        {
+            propsPerSeeker = 1
+        };
     }
 
     private void AddListeners()
@@ -71,7 +78,7 @@ public class LobbyController : Singleton<LobbyController>
 
     public void ConnectionApproval(byte[] connectionData, ulong clientId, ConnectionApprovedDelegate connectionApprovedDelegate)
     {
-        Debug.LogError(ClientData.FromBytes(connectionData).Username);
+        Debug.Log($"player connected, with username: {ClientData.FromBytes(connectionData).Username}");
 
         bool createPlayerObject = true;
         bool approved = true;
@@ -101,16 +108,16 @@ public class LobbyController : Singleton<LobbyController>
 
     private void OnServerStarted()
     {
-        Debug.LogError("Server started");
+        Debug.Log("Server started");
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        Debug.LogError("Client connected id " + clientId);
+        Debug.Log("Client connected, id: " + clientId);
     }
 
     private void OnClientDisconnect(ulong clientId)
     {
-        Debug.LogError("Client disconnected id " + clientId);
+        Debug.Log("Client disconnected, id: " + clientId);
     }
 }

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraMove : MonoBehaviour
+public class PlayerCameraController : MonoBehaviour
 {
     public GameObject playerModel;
 
@@ -54,7 +54,7 @@ public class CameraMove : MonoBehaviour
 
         Quaternion newRotation = TargetRotation;
         newRotation.eulerAngles = new Vector3(0, newRotation.eulerAngles.y, 0);
-        playerModel.transform.rotation = newRotation;
+        transform.rotation = newRotation;
     }
 
     public void ResetTargetRotation(Quaternion target)
