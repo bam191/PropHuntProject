@@ -76,6 +76,26 @@ public static class PlayerConstants
     public static string ModifierKeyDefault = "LeftShift";
     public static string ModifierKeyTooltip = "When pressed at the same time, modifies the action of other keys";
 
+    public static string Weapon1 = "Weapon1";
+    public static string Weapon1Default = "Alpha1";
+    public static string Weapon1Tooltip = "Equips weapon 1";
+
+    public static string Weapon2 = "Weapon2";
+    public static string Weapon2Default = "Alpha2";
+    public static string Weapon2Tooltip = "Equips weapon 2";
+
+    public static string Weapon3 = "Weapon3";
+    public static string Weapon3Default = "Alpha3";
+    public static string Weapon3Tooltip = "Equips weapon 3";
+
+    public static string Weapon4 = "Weapon4";
+    public static string Weapon4Default = "Alpha4";
+    public static string Weapon4Tooltip = "Equips weapon 4";
+
+    public static string Weapon5 = "Weapon5";
+    public static string Weapon5Default = "Alpha5";
+    public static string Weapon5Tooltip = "Equips weapon 5";
+
 
     // Tooltips
     public static string SensitivityTooltip = "Mouse Sensitivity.";

@@ -7,7 +7,9 @@ public class PlayerShooting : NetworkBehaviour
 {
     [SerializeField] private const float shootDistance = 1000;
     [SerializeField] private LayerMask playerLayerMask;
+
     private PlayerCameraController _playerCameraController;
+    private Gun _playerGun;
 
     void Start()
     {
