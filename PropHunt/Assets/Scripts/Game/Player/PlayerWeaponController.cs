@@ -65,5 +65,15 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         _serverGunController.SetGunState(gunType);
         _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+
+        EquipGunClientRpc(gunType);
+    }
+
+    [ClientRpc]
+    private void EquipGunClientRpc(eGunType gunType)
+    {
+        if(IsOwner) return;
+
+        _serverGunController.SetGunState(gunType);
     }
 }
