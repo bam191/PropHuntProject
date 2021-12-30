@@ -41,12 +41,14 @@ public class LobbySettingsController : MonoBehaviour
         _mapDropdown.options.Clear();
         _mapDropdown.AddOptions(_lobbyMapsSO.lobbyMaps);
         _mapDropdown.onValueChanged.AddListener((mapIndex) => SetMap(_lobbyMapsSO.lobbyMaps[mapIndex]));
+        _mapDropdown.value = 0;
     }
 
     private void SetupPropsPerSeekerSlider()
     {
         _propsPerSeekerSlider.onValueChanged.AddListener((value) => SetPropsPerSeeker( (int) value) );
         _propsPerSeekerSlider.onValueChanged.AddListener((value) => UpdatePropsPerSeekerText( (int) value) );
+        _propsPerSeekerSlider.value = 1;
     }
 
     public void SetPropsPerSeeker(int propsPerSeeker)

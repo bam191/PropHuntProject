@@ -48,7 +48,7 @@ public class PlayerController : NetworkBehaviour
     {
         this.team.Value = team;
 
-        _playerModelController.SetTeam(team);
+        //_playerModelController.SetTeam(team);
     }
 
     public void SetVelocity(Vector3 velocity)

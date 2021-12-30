@@ -9,9 +9,11 @@ public struct LobbyData
 {
     public int propsPerSeeker;
     public string mapName;
+    public float playerWaitLength;
     public float preRoundLength;
     public float hideRoundLength;
     public float seekRoundLength;
+    public float endRoundLength;
     public int numberOfRounds;
     
     public static byte[] GetBytes(LobbyData lobbyData)

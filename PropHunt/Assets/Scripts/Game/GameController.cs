@@ -48,6 +48,12 @@ public class GameController : Singleton<GameController>
 
         switch (_currentState)
         {
+            case eGameState.WaitingForPlayers:
+                if (roundTimer.Value <= 0)
+                {
+                    SetState(eGameState.PreRound);
+                }
+                break;
             case eGameState.PreRound:
                 if (roundTimer.Value <= 0)
                 {
@@ -71,7 +77,12 @@ public class GameController : Singleton<GameController>
                 {
                     if (roundCount.Value == LobbyController.Instance.LobbyData.numberOfRounds)
                     {
-                        
+                        SetState(eGameState.GameEnd);
+                    }
+                    else
+                    {
+                        roundCount.Value++;
+                        SetState(eGameState.PreRound);
                     }
                 }
                 break;
@@ -123,8 +134,8 @@ public class GameController : Singleton<GameController>
     /// </summary>
     private void WaitingForPlayers()
     {
-        // When host presses start, or time is up
-        SetState(eGameState.PreRound);
+        // When host presses start, or time is up, move to PreRound
+        roundTimer.Value = LobbyController.Instance.LobbyData.playerWaitLength;
     }
 
     #region PreRound
@@ -218,12 +229,12 @@ public class GameController : Singleton<GameController>
     private void SeekRound()
     {
         roundTimer.Value = LobbyController.Instance.LobbyData.seekRoundLength;
-        EnableHunterVision();
+        EnableHunters();
     }
 
-    private void EnableHunterVision()
+    private void EnableHunters()
     {
-        
+        // Enable vision, movement, and weapons
     }
 
     /// <summary>
@@ -233,10 +244,7 @@ public class GameController : Singleton<GameController>
     /// </summary>
     private void RoundEnd()
     {
-        // when rounds remaining (after a delay)
-        //SetState(eGameState.PreRound);
-        // when rounds are done
-        SetState(eGameState.GameEnd);
+        roundTimer.Value = LobbyController.Instance.LobbyData.endRoundLength;
     }
 
     /// <summary>
@@ -245,7 +253,8 @@ public class GameController : Singleton<GameController>
     /// </summary>
     private void GameEnd()
     {
-        // Closes the lobby, or goes to map voting
+        // For now, this just closes the lobby, in the future we can show the scoreboard or allow voting
+        LoadingController.Instance.LoadMainMenu();
     }
     
     
