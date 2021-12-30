@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class PlayerShooting : NetworkBehaviour
 {
-    [SerializeField] private CameraMove _cameraMove;
     [SerializeField] private const float shootDistance = 1000;
     [SerializeField] private LayerMask playerLayerMask;
-    
+    private PlayerCameraController _playerCameraController;
+
     void Start()
     {
-        
+        _playerCameraController = GetComponent<PlayerCameraController>();
     }
 
     void Update()
@@ -28,7 +28,7 @@ public class PlayerShooting : NetworkBehaviour
     
     public void Fire()
     {
-        Ray ray = _cameraMove.playerCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _playerCameraController.playerCamera.ViewportPointToRay(new Vector3(0.5f,0.5f,0));
 
         if (Physics.Raycast(ray, out var raycastHit, shootDistance, playerLayerMask))
         {
@@ -52,9 +52,9 @@ public class PlayerShooting : NetworkBehaviour
         var clientToDamage = NetworkManager.Singleton.ConnectedClients[clientId]
             .PlayerObject.GetComponent<PlayerController>();
 
-        if (clientToDamage != null && clientToDamage.health.Value > 0)
+        if (clientToDamage != null && clientToDamage._health.Value > 0)
         {
-            clientToDamage.health.Value -= damage;
+            clientToDamage._health.Value -= damage;
         }
         
         // Execute method on the client getting hit

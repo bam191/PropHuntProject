@@ -2,15 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum eTeam
+{
+    Any,
+    Props,
+    Hunters
+}
+
 public class SpawnPoint : LevelObject
 {
-    public enum eTeam
-    {
-        Any,
-        Props,
-        Hunters
-    }
-
     [Tooltip("Higher priority spawn points are selected first")]
     [SerializeField] private int _priority;
     [Tooltip("Which team can spawn using this spawn point")]

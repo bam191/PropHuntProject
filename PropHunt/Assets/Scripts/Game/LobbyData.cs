@@ -7,6 +7,8 @@ using UnityEngine;
 [Serializable]
 public struct LobbyData
 {
+    public int propsPerSeeker;
+    
     public static byte[] GetBytes(LobbyData lobbyData)
     {
         int size = Marshal.SizeOf(lobbyData);

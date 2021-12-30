@@ -5,15 +5,10 @@ using UnityEngine;
 public class ServerPlayerMovement : MonoBehaviour
 {
     [SerializeField] private PlayerController _playerController;
-    
-    void Start()
-    {
-        
-    }
 
-    void Update()
+    private void Update()
     {
-        transform.position = _playerController.requestedPosition.Value;
-        transform.rotation = Quaternion.Euler(_playerController.requestedRotation.Value);
+        transform.position = _playerController._requestedPosition.Value;
+        transform.rotation = Quaternion.Euler(new Vector3(0, _playerController._requestedRotation.Value.y, 0));
     }
 }
