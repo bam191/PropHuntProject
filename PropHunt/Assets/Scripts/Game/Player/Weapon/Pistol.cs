@@ -7,7 +7,6 @@ public class Pistol : Gun
 {
     public override void Fire(Vector3 lookPoint, Vector3 lookDirection)
     {
-        Debug.LogError("fire");
         Ray ray = new Ray();
         ray.origin = lookPoint;
         ray.direction = lookDirection;
