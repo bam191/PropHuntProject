@@ -45,15 +45,8 @@ public class LoadingController : Singleton<LoadingController>
 
     public void LoadMainMenu()
     {
-        if (NetworkManager.Singleton.IsHost)
-        {
-            LobbyController.Instance.Disconnect();
-        }
-
-        else
-        {
-            
-        }
+        LobbyController.Instance.Disconnect();
+        
         SceneManager.LoadScene(MAIN_MENU_SCENE_NAME, LoadSceneMode.Single);
     }
 

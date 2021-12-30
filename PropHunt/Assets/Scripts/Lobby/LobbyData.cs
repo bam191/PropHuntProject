@@ -9,6 +9,10 @@ public struct LobbyData
 {
     public int propsPerSeeker;
     public string mapName;
+    public float preRoundLength;
+    public float hideRoundLength;
+    public float seekRoundLength;
+    public int numberOfRounds;
     
     public static byte[] GetBytes(LobbyData lobbyData)
     {
@@ -46,5 +50,10 @@ public struct LobbyData
     public void SetMap(string mapName)
     {
         this.mapName = mapName;
+    }
+
+    public void SetPreRoundLength(float preRoundLength)
+    {
+        this.preRoundLength = preRoundLength;
     }
 }

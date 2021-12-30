@@ -66,11 +66,11 @@ public class LobbySettingsController : MonoBehaviour
 
     public void QuitLobby()
     {
-        
+        LoadingController.Instance.LoadMainMenu();
     }
 
     public void StartGame()
     {
-        
+        GameController.Instance.SetState(eGameState.PreRound);
     }
 }

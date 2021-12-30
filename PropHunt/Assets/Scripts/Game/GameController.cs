@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum eGameState
 {
@@ -17,6 +19,11 @@ public class GameController : Singleton<GameController>
 
     [SerializeField] private GameObject _lobbySettingsPrefab;
 
+    public NetworkVariable<float> roundTimer = new NetworkVariable<float>(0f);
+    public NetworkVariable<bool> areHuntersDead = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> arePropsDead = new NetworkVariable<bool>(false);
+    public NetworkVariable<int> roundCount = new NetworkVariable<int>(0);
+
     public override void Initialize()
     {
         _networkManager = NetworkManager.Singleton;
@@ -30,36 +37,72 @@ public class GameController : Singleton<GameController>
         }
     }
 
-    public void RegisterPlayer(PlayerController player)
+    private void Update()
     {
-        _players.Add(player);
+        CheckStateMigration();
     }
 
+    private void CheckStateMigration()
+    {
+        roundTimer.Value -= Time.deltaTime;
+
+        switch (_currentState)
+        {
+            case eGameState.PreRound:
+                if (roundTimer.Value <= 0)
+                {
+                    SetState(eGameState.HideRound);
+                }
+                break;
+            case eGameState.HideRound:
+                if (roundTimer.Value <= 0)
+                {
+                    SetState(eGameState.SeekingRound);
+                }
+                break;
+            case eGameState.SeekingRound:
+                if (roundTimer.Value <= 0 || areHuntersDead.Value || arePropsDead.Value)
+                {
+                    SetState(eGameState.RoundEnd);
+                }
+                break;
+            case eGameState.RoundEnd:
+                if (roundTimer.Value <= 0 )
+                {
+                    if (roundCount.Value == LobbyController.Instance.LobbyData.numberOfRounds)
+                    {
+                        
+                    }
+                }
+                break;
+        }
+    }
+    
     public void SetState(eGameState newState)
     {
         _currentState = newState;
         switch (newState)
         {
             case eGameState.Setup:
-                StartCoroutine(Setup());
+                Setup();
                 break;
             case eGameState.WaitingForPlayers:
-                StartCoroutine(WaitingForPlayers());
+                WaitingForPlayers();
                 break;
             case eGameState.PreRound:
-                StartCoroutine(PreRound());
+                PreRound();
                 break;
             case eGameState.HideRound:
-                StartCoroutine(HideRound());
+                HideRound();
                 break;
             case eGameState.SeekingRound:
-                StartCoroutine(SeekRound());
+                SeekRound();
                 break;
             case eGameState.RoundEnd:
-                StartCoroutine(RoundEnd());
+                RoundEnd();
                 break;
             case eGameState.GameEnd:
-                StartCoroutine(GameEnd());
+                GameEnd();
                 break;
             
         }
@@ -69,9 +112,8 @@ public class GameController : Singleton<GameController>
     /// Take the lobby information and set up the server's settings
     /// For example: map, move speed, game mode, etc
     /// </summary>
-    private IEnumerator Setup()
+    private void Setup()
     {
-        yield return new WaitForSeconds(1);
         Instantiate(_lobbySettingsPrefab);
         SetState(eGameState.WaitingForPlayers);
     }
@@ -79,22 +121,29 @@ public class GameController : Singleton<GameController>
     /// <summary>
     /// Send all players to free cam, start a timer
     /// </summary>
-    private IEnumerator WaitingForPlayers()
+    private void WaitingForPlayers()
     {
         // When host presses start, or time is up
-        yield return new WaitForSeconds(1);
-        
         SetState(eGameState.PreRound);
     }
 
+    #region PreRound
     /// <summary>
     /// Assign players to teams
     /// Move players to their starting points
     /// Spawn all props
     /// </summary>
-    private IEnumerator PreRound()
+    private void PreRound()
     {
-        yield return new WaitForSeconds(1);
+        roundTimer.Value = LobbyController.Instance.LobbyData.preRoundLength;
+
+        AssignTeams();
+        LoadMap();
+        SpawnPlayers();
+    }
+
+    private void AssignTeams()
+    {
         int numberOfSeekers = _players.Count / LobbyController.Instance.LobbyData.propsPerSeeker;
 
         List<PlayerController> availablePlayers = new List<PlayerController>(_players);
@@ -119,32 +168,62 @@ public class GameController : Singleton<GameController>
                 player.SetTeam(eTeam.Props);
             }
         }
-        
-        SetState(eGameState.HideRound);
     }
 
+    private void LoadMap()
+    {
+        LoadingController.Instance.LoadServerLevel(LobbyController.Instance.LobbyData.mapName);
+    }
+
+    private void SpawnPlayers()
+    {
+        SpawnController.Instance.ResetSpawnPoints();
+        foreach (PlayerController player in _players)
+        {
+            SpawnPoint spawnPoint = SpawnController.Instance.GetSpawnPoint(player.team.Value);
+            player._requestedPosition.Value = spawnPoint.transform.position;
+        }
+    }
+    #endregion
+    
     /// <summary>
     /// Disable seeker vision/movement
     /// Enable prop vision/movement
     /// Start timer
     /// </summary>
-    private IEnumerator HideRound()
+    private void HideRound()
     {
-        yield return new WaitForSeconds(1);
-        // Move after time elapses
-        SetState(eGameState.SeekingRound);
+        roundTimer.Value = LobbyController.Instance.LobbyData.hideRoundLength;
+
+        InitPlayerState();
+    }
+    
+    private void InitPlayerState()
+    {
+        foreach (PlayerController player in _players)
+        {
+            if (player.team.Value == eTeam.Hunters)
+            {
+                // Disable vision
+            }else if (player.team.Value == eTeam.Props)
+            {
+                // Assign random prop
+            }
+        }
     }
 
     /// <summary>
     /// Enable seekers
     /// </summary>
-    private IEnumerator SeekRound()
+    private void SeekRound()
     {
-        yield return new WaitForSeconds(1);
-        // when:
-        // - time runs out
-        // - all seekers/props dead
-        SetState(eGameState.RoundEnd);
+        roundTimer.Value = LobbyController.Instance.LobbyData.seekRoundLength;
+        EnableHunterVision();
+    }
+
+    private void EnableHunterVision()
+    {
+        
     }
 
     /// <summary>
@@ -152,9 +231,8 @@ public class GameController : Singleton<GameController>
     /// Show scoreboard
     /// Check remaining rounds, end game if over
     /// </summary>
-    private IEnumerator RoundEnd()
+    private void RoundEnd()
     {
-        yield return new WaitForSeconds(1);
         // when rounds remaining (after a delay)
         //SetState(eGameState.PreRound);
         // when rounds are done
@@ -165,9 +243,15 @@ public class GameController : Singleton<GameController>
     /// Show scoreboard
     /// Map voting
     /// </summary>
-    private IEnumerator GameEnd()
+    private void GameEnd()
     {
-        yield return new WaitForSeconds(1);
         // Closes the lobby, or goes to map voting
     }
+    
+    
+    public void RegisterPlayer(PlayerController player)
+    {
+        _players.Add(player);
+    }
+
 }
