@@ -374,6 +374,9 @@ MonoBehaviour:
   _animationController: {fileID: 914260702416215324}
   _localGunController: {fileID: 5170410992525401193}
   _serverGunController: {fileID: 7789307295060150883}
+  _cameraController: {fileID: 8692858742597719795}
+  _networkEquippedGun:
+    m_InternalValue: 0
 --- !u!1001 &6289059043207793483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -880,6 +883,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -3.7025027
+      objectReference: {fileID: 0}
+    - target: {fileID: 7525756463230050870, guid: 455e7eb72a1700641a80ffe07176b7d5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7807382286264998173, guid: 455e7eb72a1700641a80ffe07176b7d5,
         type: 3}

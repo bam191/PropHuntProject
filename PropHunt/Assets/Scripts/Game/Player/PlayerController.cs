@@ -16,7 +16,7 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<Vector3> _requestedPosition;
     public NetworkVariable<Vector3> _requestedRotation;
     
-    public NetworkVariable<int> _health = new NetworkVariable<int>(100);
+    public NetworkVariable<float> _health = new NetworkVariable<float>(100);
     public NetworkVariable<int> _kills = new NetworkVariable<int>(0);
     public NetworkVariable<int> _deaths = new NetworkVariable<int>(0);
 
@@ -64,6 +64,34 @@ public class PlayerController : NetworkBehaviour
         _requestCrouch.Value = input.requestCrouch;
         _requestedPosition.Value = input.requestedPosition;
         _requestedRotation.Value = input.requestedRotation;
+    }
+
+    [ServerRpc]
+    public void TakeDamageServerRpc(ulong damageDealer, float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead;
+            }
+        }
+    }
+
+    [ServerRpc]
+    public void TakeSelfDamageServerRpc(float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
     }
 
     #endregion

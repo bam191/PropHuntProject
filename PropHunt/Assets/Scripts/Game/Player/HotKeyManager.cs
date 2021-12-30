@@ -65,6 +65,8 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         LoadSavedKey(PlayerConstants.Weapon3, PlayerConstants.Weapon3Default);
         LoadSavedKey(PlayerConstants.Weapon4, PlayerConstants.Weapon4Default);
         LoadSavedKey(PlayerConstants.Weapon5, PlayerConstants.Weapon5Default);
+        LoadSavedKey(PlayerConstants.FireWeapon, PlayerConstants.FireWeaponDefault);
+        LoadSavedKey(PlayerConstants.AimWeapon, PlayerConstants.AimWeaponDefault);
     }
 
     public void LoadSavedKey(string keyName, string defaultValue)
@@ -111,6 +113,9 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         AddDefaultKey(PlayerConstants.Weapon3, PlayerConstants.Weapon3Default);
         AddDefaultKey(PlayerConstants.Weapon4, PlayerConstants.Weapon4Default);
         AddDefaultKey(PlayerConstants.Weapon5, PlayerConstants.Weapon5Default);
+        AddDefaultKey(PlayerConstants.FireWeapon, PlayerConstants.FireWeaponDefault);
+        AddDefaultKey(PlayerConstants.AimWeapon, PlayerConstants.AimWeaponDefault);
+        
     }
 
     public void AddDefaultKey(string keyName, string defaultValue)
@@ -144,6 +149,8 @@ public class HotKeyManager : Singleton<HotKeyManager> {
         tooltips.Add(PlayerConstants.Weapon3, PlayerConstants.Weapon3Tooltip);
         tooltips.Add(PlayerConstants.Weapon4, PlayerConstants.Weapon4Tooltip);
         tooltips.Add(PlayerConstants.Weapon5, PlayerConstants.Weapon5Tooltip);
+        tooltips.Add(PlayerConstants.FireWeapon, PlayerConstants.FireWeaponTooltip);
+        tooltips.Add(PlayerConstants.AimWeapon, PlayerConstants.AimWeaponTooltip);
         
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class RPG : Gun
 {
-    public override void Shoot()
+    public override void Fire(Vector3 lookPoint, Vector3 lookDirection)
     {
 
-        base.Shoot();
+        base.Fire(lookPoint, lookDirection);
     }
 }

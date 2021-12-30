@@ -96,6 +96,14 @@ public static class PlayerConstants
     public static string Weapon5Default = "Alpha5";
     public static string Weapon5Tooltip = "Equips weapon 5";
 
+    public static string FireWeapon = "FireWeapon";
+    public static string FireWeaponDefault = "Mouse0";
+    public static string FireWeaponTooltip = "Fire your equipped weapon.";
+
+    public static string AimWeapon = "AimWeapon";
+    public static string AimWeaponDefault = "Mouse1";
+    public static string AimWeaponTooltip = "Aim down the sights of your weapon";
+
 
     // Tooltips
     public static string SensitivityTooltip = "Mouse Sensitivity.";

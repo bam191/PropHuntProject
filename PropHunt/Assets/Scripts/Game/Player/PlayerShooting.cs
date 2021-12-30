@@ -23,7 +23,7 @@ public class PlayerShooting : NetworkBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 Debug.Log(("shooting"));
-                Fire();
+                //Fire();
             }
         }
     }

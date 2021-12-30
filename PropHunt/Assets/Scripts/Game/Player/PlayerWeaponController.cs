@@ -9,10 +9,12 @@ public class PlayerWeaponController : NetworkBehaviour
     [SerializeField] private PlayerAnimationController _animationController;
     [SerializeField] private PlayerGunController _localGunController;
     [SerializeField] private PlayerGunController _serverGunController;
-
-    private bool _canSwitchWeapons = true;
+    [SerializeField] private PlayerCameraController _cameraController;
 
     private Gun _equippedGun;
+    private bool _isAiming;
+    private bool _isTransitionAiming;
+
     public NetworkVariable<eGunType> _networkEquippedGun;
 
     private void Start()
@@ -30,15 +32,35 @@ public class PlayerWeaponController : NetworkBehaviour
         return currentState == InputController.eInputState.Hunter;
     }
 
+    private bool CanFireWeapon()
+    {
+        InputController.eInputState currentState = InputController.Instance.InputState;
+
+        return currentState == InputController.eInputState.Hunter;
+    }
+
+    private bool CanAimWeapon()
+    {
+        InputController.eInputState currentState = InputController.Instance.InputState;
+
+        return currentState == InputController.eInputState.Hunter;
+    }
+
     private void Update()
     {
-        if (!IsLocalPlayer || !CanSwitchWeapons()) return;
+        if (!IsLocalPlayer) return;
 
-        if (InputController.Instance.InputState == InputController.eInputState.Hunter)
+        TrySwitchingWeapons();
+        TryAimWeapon();
+        TryFireWeapon();
+    }
 
-        if(InputManager.GetKeyDown(PlayerConstants.Weapon1))
+    private void TrySwitchingWeapons()
+    {
+        if (!CanSwitchWeapons()) return;
+
+        if (InputManager.GetKeyDown(PlayerConstants.Weapon1))
         {
-            Debug.LogError("equip pistol");
             EquipGun(eGunType.Pistol);
         }
         else if (InputManager.GetKeyDown(PlayerConstants.Weapon2))
@@ -59,14 +81,53 @@ public class PlayerWeaponController : NetworkBehaviour
         }
     }
 
+    private void TryAimWeapon()
+    {
+        if (!CanAimWeapon()) return;
+
+        if (InputManager.GetKey(PlayerConstants.AimWeapon) && !_isAiming)
+        {
+            if (_equippedGun != null && _equippedGun.CanAim())
+            {
+                _isAiming = true;
+                _equippedGun.EnterAiming();
+            }
+            //aim
+        }
+        else if (!InputManager.GetKey(PlayerConstants.AimWeapon) && _isAiming)
+        {
+            if (_equippedGun != null && _equippedGun.CanStopAim())
+            {
+                _isAiming = false;
+                _equippedGun.ExitAiming();
+            }
+            //stop aim
+        }
+    }
+
+    private void TryFireWeapon()
+    {
+        if (!CanFireWeapon()) return;
+
+        if (InputManager.GetKey(PlayerConstants.FireWeapon))
+        {
+            if (_equippedGun != null && _equippedGun.CanFire())
+            {
+                _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward);
+            }
+        }
+    }
+
     private void EquipGun(eGunType gunType)
     {
-        if (!_canSwitchWeapons) return;
+        if (_equippedGun == null || _equippedGun.CanSwitch())
+        {
+            _equippedGun?.SwitchWeapon();
+            _localGunController.SetGunState(gunType);
+            _equippedGun = _localGunController.EquippedGun.GetComponent<Gun>();
 
-        _localGunController.SetGunState(gunType);
-        _equippedGun = _localGunController.EquippedGun.GetComponent<Gun>();
-
-        EquipGunServerRpc(gunType);
+            EquipGunServerRpc(gunType);
+        }
     }
 
     [ServerRpc]
