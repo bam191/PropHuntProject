@@ -17,22 +17,15 @@ public class WFX_LightFlicker : MonoBehaviour
 	void Start ()
 	{
 		timer = time;
-		StartCoroutine("Flicker");
+		StartCoroutine(Flicker());
 	}
 	
 	IEnumerator Flicker()
 	{
-		while(true)
-		{
-			GetComponent<Light>().enabled = !GetComponent<Light>().enabled;
-			
-			do
-			{
-				timer -= Time.deltaTime;
-				yield return null;
-			}
-			while(timer > 0);
-			timer = time;
-		}
+        GetComponent<Light>().enabled = true;
+		
+        yield return new WaitForSeconds(time);
+
+        GetComponent<Light>().enabled = false;
 	}
 }

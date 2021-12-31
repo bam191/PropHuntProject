@@ -16,6 +16,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] protected eGunType _gunType;
     [SerializeField] protected eGunFireMode _fireMode;
     [SerializeField] protected LayerMask _hitLayers;
+    [SerializeField] protected Transform _gunBarrel;
 
     [SerializeField] protected float _gunDamage;
     [SerializeField] protected float _gunSelfDamage;
@@ -59,10 +60,10 @@ public class Gun : NetworkBehaviour
 
     protected virtual void SpawnMuzzleFlash()
     {
-
+        VFXController.Instance.SpawnMuzzleFlash(_gunBarrel, _gunType);
     }
     
-    protected virtual void SpawnBulletEffect()
+    protected virtual void SpawnBulletEffect(Ray ray)
     {
 
     }
@@ -137,7 +138,18 @@ public class Gun : NetworkBehaviour
         return _recoilMultiplier;
     }
 
-    protected virtual void FireVFX(Ray ray)
+    public virtual void FireVFX(Ray[] rays)
+    {
+        foreach (Ray ray in rays)
+        {
+            SpawnBulletImpact(ray);
+            SpawnBulletEffect(ray);
+        }
+
+        SpawnMuzzleFlash();
+    }
+
+    protected virtual void SpawnBulletImpact(Ray ray)
     {
         if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
         {
@@ -160,9 +172,6 @@ public class Gun : NetworkBehaviour
 
             VFXController.Instance.SpawnBulletHit(hitPoint, hitNormal, hitObject.transform, hitMaterial);
         }
-
-        SpawnMuzzleFlash();
-        SpawnBulletEffect();
     }
 
     [ServerRpc]
@@ -190,14 +199,14 @@ public class Gun : NetworkBehaviour
             }
         }
 
-        FireClientRpc(ray, hitPlayer, damageDealt);
+        FireClientRpc(new List<Ray>(){ray}.ToArray(), hitPlayer, damageDealt);
     }
 
     [ClientRpc]
-    protected virtual void FireClientRpc(Ray ray, bool hitPlayer, float damageDealt)
+    public virtual void FireClientRpc(Ray[] ray, bool hitPlayer, float damageDealt)
     {
         if (IsOwner) return;
 
-        FireVFX(ray);
+        UserPlayerController.FireServerWeaponVFX(ray);
     }
 }

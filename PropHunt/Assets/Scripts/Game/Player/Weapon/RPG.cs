@@ -16,21 +16,25 @@ public class RPG : Gun
         FireServerRpc(ray);
 
         if (IsOwner)
-            FireVFX(ray);
+            FireVFX(new Ray[] { ray });
 
         base.Fire(lookPoint, lookDirection);
     }
 
-    protected override void FireVFX(Ray ray)
+    public override void FireVFX(Ray[] rays)
     {
-        if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
+        foreach (Ray ray in rays)
         {
-            Vector3 hitPoint = raycastHit.point;
-            VFXController.Instance.SpawnExplosion(hitPoint);
+            SpawnBulletEffect(ray);
+
+            if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
+            {
+                Vector3 hitPoint = raycastHit.point;
+                VFXController.Instance.SpawnExplosion(hitPoint);
+            }
         }
 
         SpawnMuzzleFlash();
-        SpawnBulletEffect();
     }
 
     [ServerRpc]
@@ -45,7 +49,7 @@ public class RPG : Gun
 
             Collider[] hitColliders = Physics.OverlapSphere(hitPoint, _explosionRadius, _hitLayers);
 
-            foreach(Collider hitCollider in hitColliders)
+            foreach (Collider hitCollider in hitColliders)
             {
                 GameObject hitObject = raycastHit.collider.gameObject;
 
@@ -66,12 +70,6 @@ public class RPG : Gun
             UserPlayerController.TakeSelfDamage(_gunSelfDamage);
         }
 
-        FireClientRpc(ray, hitPlayer, damageDealt);
-    }
-
-    [ClientRpc]
-    protected override void FireClientRpc(Ray ray, bool hitPlayer, float damageDealt)
-    {
-        base.FireClientRpc(ray, hitPlayer, damageDealt);
+        FireClientRpc(new Ray[] { ray }, hitPlayer, damageDealt);
     }
 }

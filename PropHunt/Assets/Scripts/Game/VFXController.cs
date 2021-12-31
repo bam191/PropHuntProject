@@ -46,7 +46,7 @@ public class VFXController : Singleton<VFXController>
 
     public void SpawnBulletHit(Vector3 hitPoint, Vector3 normal, Transform parent, ObjectMaterial.eMaterial material)
     {
-        GameObject bulletHit = Instantiate<GameObject>(_vfxData.GetGameObject(VFXData.eVFXElementType.BulletImpact, material));
+        GameObject bulletHit = Instantiate<GameObject>(_vfxData.GetBulletImpact(material));
         SpawnedVFXData vfxData = new SpawnedVFXData();
         vfxData.SpawnTime = Time.time;
         vfxData.VFXObject = bulletHit;
@@ -63,13 +63,30 @@ public class VFXController : Singleton<VFXController>
 
     public void SpawnExplosion(Vector3 hitPoint)
     {
-        GameObject explosion = Instantiate<GameObject>(_vfxData.GetGameObject(VFXData.eVFXElementType.PointEffect, ObjectMaterial.eMaterial.None));
+        GameObject explosion = Instantiate<GameObject>(_vfxData.GetExplosion(ObjectMaterial.eMaterial.None));
         SpawnedVFXData vfxData = new SpawnedVFXData();
         vfxData.SpawnTime = Time.time;
         vfxData.VFXObject = explosion;
         vfxData.LifeTime = 20;
 
         explosion.transform.position = hitPoint;
+
+        _spawnedVFX.Add(vfxData);
+
+        CleanUpExtraVFX();
+    }
+
+    public void SpawnMuzzleFlash(Transform gunBarrel, eGunType gunType)
+    {
+        GameObject muzzleFlash = Instantiate<GameObject>(_vfxData.GetMuzzleFlash(gunType));
+        SpawnedVFXData vfxData = new SpawnedVFXData();
+        vfxData.SpawnTime = Time.time;
+        vfxData.VFXObject = muzzleFlash;
+        vfxData.LifeTime = 1;
+
+        muzzleFlash.transform.parent = gunBarrel;
+        muzzleFlash.transform.position = gunBarrel.position;
+        muzzleFlash.transform.rotation = gunBarrel.rotation;
 
         _spawnedVFX.Add(vfxData);
 
@@ -90,6 +107,6 @@ public class VFXController : Singleton<VFXController>
 
     private void RemoveFirstVFX()
     {
-        
+
     }
 }

@@ -12,25 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a5b3420447c2984b81bfbb56a853f88, type: 3}
   m_Name: VFXData
   m_EditorClassIdentifier: 
-  _vfxDataElements:
-  - ElementType: 1
-    MaterialType: 3
-    Prefab: {fileID: 100002, guid: caa8bd0d2623acf4d915f16e0ab71218, type: 3}
-  - ElementType: 1
-    MaterialType: 1
+  _bulletImpacts:
+  - MaterialType: 1
     Prefab: {fileID: 100006, guid: 9e95c7b2183a4f345aaf86846f8f1918, type: 3}
-  - ElementType: 1
-    MaterialType: 5
-    Prefab: {fileID: 100002, guid: 5d73f72c6be7d0440bbc9c87d4f718c0, type: 3}
-  - ElementType: 1
-    MaterialType: 2
-    Prefab: {fileID: 100002, guid: 2f9348d6583cde14eb0d82bb9732647e, type: 3}
-  - ElementType: 1
-    MaterialType: 4
-    Prefab: {fileID: 100002, guid: 0b24f31f464fa614a84acdeac974ed6b, type: 3}
-  - ElementType: 1
-    MaterialType: 6
+  - MaterialType: 6
     Prefab: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
-  - ElementType: 3
-    MaterialType: 0
+  - MaterialType: 5
+    Prefab: {fileID: 100002, guid: 5d73f72c6be7d0440bbc9c87d4f718c0, type: 3}
+  - MaterialType: 4
+    Prefab: {fileID: 100002, guid: 0b24f31f464fa614a84acdeac974ed6b, type: 3}
+  - MaterialType: 2
+    Prefab: {fileID: 100002, guid: 2f9348d6583cde14eb0d82bb9732647e, type: 3}
+  - MaterialType: 3
+    Prefab: {fileID: 100002, guid: caa8bd0d2623acf4d915f16e0ab71218, type: 3}
+  _explosions:
+  - MaterialType: 0
     Prefab: {fileID: 100004, guid: b46890100828db6429ff69c322b45893, type: 3}
+  _muzzleFlashes:
+  - GunType: 1
+    Prefab: {fileID: 100002, guid: eb553b67921c92649ac7dbbc561e2047, type: 3}
+  - GunType: 2
+    Prefab: {fileID: 100006, guid: 7e9c50938e32351438a7df9ccad2f2a5, type: 3}
+  - GunType: 3
+    Prefab: {fileID: 100006, guid: c330fce32ded59c4ab629a9bda66d420, type: 3}
+  - GunType: 4
+    Prefab: {fileID: 100006, guid: 0661276422528d74d8c9894abad93242, type: 3}
+  - GunType: 5
+    Prefab: {fileID: 100006, guid: ed543e3b907985c45b46b80d2e39e6e9, type: 3}
