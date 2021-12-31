@@ -12,6 +12,7 @@ public class PlayerController : NetworkBehaviour
     private PlayerModelController _playerModelController;
     private PlayerAnimationController _playerAnimationController;
     private PlayerCameraController _playerCameraController;
+    private PlayerWeaponController _playerWeaponController;
 
     public NetworkVariable<bool> _requestCrouch;
     public NetworkVariable<Vector3> _requestedPosition;
@@ -28,6 +29,7 @@ public class PlayerController : NetworkBehaviour
         _playerModelController = GetComponentInChildren<PlayerModelController>();
         _playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
         _playerCameraController = GetComponentInChildren<PlayerCameraController>();
+        _playerWeaponController = GetComponentInChildren<PlayerWeaponController>();
     }
 
     private void Start()
@@ -61,6 +63,11 @@ public class PlayerController : NetworkBehaviour
     public void AddRecoil(float recoil, float recoilMultiplier)
     {
         _playerCameraController.AddRecoil(recoil, recoilMultiplier);
+    }
+
+    public void FireServerWeaponVFX(Ray[] ray)
+    {
+        _playerWeaponController.FireServerWeaponVFX(ray);
     }
     
     #region  RPCs

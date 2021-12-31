@@ -15,18 +15,6 @@ public class PlayerShooting : NetworkBehaviour
     {
         _playerCameraController = GetComponent<PlayerCameraController>();
     }
-
-    void Update()
-    {
-        if (IsLocalPlayer)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Debug.Log(("shooting"));
-                //Fire();
-            }
-        }
-    }
     
     public void Fire()
     {

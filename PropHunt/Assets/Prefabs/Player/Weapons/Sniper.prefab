@@ -50,6 +50,7 @@ MonoBehaviour:
   _hitLayers:
     serializedVersion: 2
     m_Bits: 129
+  _gunBarrel: {fileID: 5757214051751565385}
   _gunDamage: 50
   _gunSelfDamage: 20
   _range: 100
@@ -175,6 +176,7 @@ Transform:
   - {fileID: 1472813129578436200}
   - {fileID: 2073398501236689546}
   - {fileID: 5937936055988270307}
+  - {fileID: 5757214051751565385}
   m_Father: {fileID: 4053999043310118}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 82.813, y: -59.843, z: 26.17}
@@ -394,6 +396,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6279803375183371276
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5757214051751565385}
+  m_Layer: 0
+  m_Name: BarrelEnd
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5757214051751565385
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6279803375183371276}
+  m_LocalRotation: {x: -0.000000074505806, y: -1, z: -0.000000059604645, w: -0.00000017881393}
+  m_LocalPosition: {x: 0, y: 0.0239, z: -0.6117}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1713827721025312697}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!1001 &2077886496864216428
 PrefabInstance:
   m_ObjectHideFlags: 0

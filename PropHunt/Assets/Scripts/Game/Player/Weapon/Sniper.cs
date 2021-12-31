@@ -14,7 +14,7 @@ public class Sniper : Gun
         FireServerRpc(ray);
 
         if (IsOwner)
-            FireVFX(ray);
+            FireVFX(new Ray[]{ray});
 
         base.Fire(lookPoint, lookDirection);
     }

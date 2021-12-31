@@ -150,7 +150,12 @@ public class PlayerWeaponController : NetworkBehaviour
     private void EquipGunServerRpc(eGunType gunType)
     {
         _serverGunController.SetGunState(gunType);
-        _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+
+        if (!IsLocalPlayer)
+        {
+            _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+        }
+
         _networkEquippedGun.Value = gunType;
 
         EquipGunClientRpc(gunType);
@@ -162,10 +167,25 @@ public class PlayerWeaponController : NetworkBehaviour
         if(IsOwner) return;
 
         _serverGunController.SetGunState(gunType);
+
+        if (!IsLocalPlayer)
+        {
+            _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+        }
     }
 
     private void EquipServerSideGun()
     {
         _serverGunController.SetGunState(_networkEquippedGun.Value);
+        
+        if (!IsLocalPlayer)
+        {
+            _equippedGun = _serverGunController.EquippedGun.GetComponent<Gun>();
+        }
+    }
+
+    public void FireServerWeaponVFX(Ray[] ray)
+    {
+        _equippedGun.FireVFX(ray);
     }
 }

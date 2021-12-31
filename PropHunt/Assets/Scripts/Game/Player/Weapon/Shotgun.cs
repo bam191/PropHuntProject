@@ -29,37 +29,6 @@ public class Shotgun : Gun
         base.Fire(lookPoint, lookDirection);
     }
 
-    protected void FireVFX(Ray[] pelletRays)
-    {
-        foreach(Ray pelletRay in pelletRays)
-        {
-            if (Physics.Raycast(pelletRay, out var raycastHit, _range, _hitLayers))
-            {
-                GameObject hitObject = raycastHit.collider.gameObject;
-
-                ObjectMaterial objectMaterial = hitObject.GetComponentInParent<ObjectMaterial>();
-                ObjectMaterial.eMaterial hitMaterial = ObjectMaterial.eMaterial.None;
-                if (objectMaterial == null)
-                {
-                    objectMaterial = hitObject.GetComponentInChildren<ObjectMaterial>();
-                }
-
-                if (objectMaterial != null)
-                {
-                    hitMaterial = objectMaterial.GetMaterial();
-                }
-
-                Vector3 hitPoint = raycastHit.point;
-                Vector3 hitNormal = raycastHit.normal;
-
-                VFXController.Instance.SpawnBulletHit(hitPoint, hitNormal, hitObject.transform, hitMaterial);
-            }
-        }
-
-        SpawnMuzzleFlash();
-        SpawnBulletEffect();
-    }
-
     [ServerRpc]
     protected void FireServerRpc(Ray[] pelletRays)
     {
@@ -98,13 +67,5 @@ public class Shotgun : Gun
         }
 
         FireClientRpc(pelletRays, hitPlayer, damageDealt);
-    }
-
-    [ClientRpc]
-    protected void FireClientRpc(Ray[] pelletRays, bool hitPlayer, float damageDealt)
-    {
-        if (IsOwner) return;
-
-        FireVFX(pelletRays);
     }
 }

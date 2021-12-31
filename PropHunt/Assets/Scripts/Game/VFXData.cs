@@ -15,31 +15,69 @@ public class VFXData : ScriptableObject
     }
 
     [Serializable]
-    public struct VFXDataElement
+    public struct BulletImpact
     {
-        public eVFXElementType ElementType;
         public ObjectMaterial.eMaterial MaterialType;
         public GameObject Prefab;
     }
 
-    [SerializeField] private List<VFXDataElement> _vfxDataElements = new List<VFXDataElement>();
-
-
-    public GameObject GetGameObject(eVFXElementType elementType, ObjectMaterial.eMaterial materialType)
+    [Serializable]
+    public struct Explosion
     {
-        foreach(VFXDataElement dataElement in _vfxDataElements)
+        public ObjectMaterial.eMaterial MaterialType;
+        public GameObject Prefab;
+    }
+
+    [Serializable]
+    public struct MuzzleFlash
+    {
+        public eGunType GunType;
+        public GameObject Prefab;
+    }
+
+    [SerializeField] private List<BulletImpact> _bulletImpacts = new List<BulletImpact>();
+    [SerializeField] private List<Explosion> _explosions = new List<Explosion>();
+    [SerializeField] private List<MuzzleFlash> _muzzleFlashes = new List<MuzzleFlash>();
+
+    public GameObject GetBulletImpact(ObjectMaterial.eMaterial materialType)
+    {
+        foreach(BulletImpact dataElement in _bulletImpacts)
         {
-            if (dataElement.ElementType == elementType)
+            if (dataElement.MaterialType == materialType || materialType == ObjectMaterial.eMaterial.None)
             {
-                if (dataElement.MaterialType == materialType || dataElement.MaterialType == ObjectMaterial.eMaterial.None || materialType == ObjectMaterial.eMaterial.None)
-                {
-                    return dataElement.Prefab;
-                }
+                return dataElement.Prefab;
             }
         }
 
-        Debug.LogError($"Couldn't find vfx element for type {elementType} and material {materialType}");
+        Debug.LogError($"Couldn't find bullet impact for type material {materialType}");
         return null;
     }
 
+    public GameObject GetExplosion(ObjectMaterial.eMaterial materialType)
+    {
+        foreach(Explosion dataElement in _explosions)
+        {
+            if (dataElement.MaterialType == materialType || materialType == ObjectMaterial.eMaterial.None)
+            {
+                return dataElement.Prefab;
+            }
+        }
+
+        Debug.LogError($"Couldn't find explosion for type material {materialType}");
+        return null;
+    }
+
+    public GameObject GetMuzzleFlash(eGunType gunType)
+    {
+        foreach (MuzzleFlash dataElement in _muzzleFlashes)
+        {
+            if (dataElement.GunType == gunType || gunType == eGunType.None)
+            {
+                return dataElement.Prefab;
+            }
+        }
+
+        Debug.LogError($"Couldn't find muzzle flash for type material {gunType}");
+        return null;
+    }
 }
