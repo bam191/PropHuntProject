@@ -11,12 +11,13 @@ public class PlayerController : NetworkBehaviour
 
     private PlayerModelController _playerModelController;
     private PlayerAnimationController _playerAnimationController;
-    
+    private PlayerCameraController _playerCameraController;
+
     public NetworkVariable<bool> _requestCrouch;
     public NetworkVariable<Vector3> _requestedPosition;
     public NetworkVariable<Vector3> _requestedRotation;
     
-    public NetworkVariable<int> _health = new NetworkVariable<int>(100);
+    public NetworkVariable<float> _health = new NetworkVariable<float>(100);
     public NetworkVariable<int> _kills = new NetworkVariable<int>(0);
     public NetworkVariable<int> _deaths = new NetworkVariable<int>(0);
 
@@ -26,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     {
         _playerModelController = GetComponentInChildren<PlayerModelController>();
         _playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
+        _playerCameraController = GetComponentInChildren<PlayerCameraController>();
     }
 
     private void Start()
@@ -55,6 +57,11 @@ public class PlayerController : NetworkBehaviour
     {
         _playerAnimationController.SetVelocity(velocity);
     }
+
+    public void AddRecoil(float recoil, float recoilMultiplier)
+    {
+        _playerCameraController.AddRecoil(recoil, recoilMultiplier);
+    }
     
     #region  RPCs
 
@@ -64,6 +71,72 @@ public class PlayerController : NetworkBehaviour
         _requestCrouch.Value = input.requestCrouch;
         _requestedPosition.Value = input.requestedPosition;
         _requestedRotation.Value = input.requestedRotation;
+    }
+
+    [ServerRpc]
+    public void TakeDamageServerRpc(ulong damageDealer, float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead;
+            }
+        }
+    }
+
+    [ServerRpc]
+    public void TakeSelfDamageServerRpc(float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
+    }
+
+    public void TakeDamage(ulong damageDealer, float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
+    }
+
+    public void TakeSelfDamage(float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
+    }
+
+    public void Heal(float health)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value += health;
+            if (_health.Value > 100)
+            {
+                _health.Value = 100;
+            }
+        }
     }
 
     #endregion

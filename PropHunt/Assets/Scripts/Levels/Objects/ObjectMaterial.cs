@@ -6,6 +6,7 @@ public class ObjectMaterial : MonoBehaviour
 {
     public enum eMaterial
     {
+        None,
         Concrete,
         Dirt,
         Metal,

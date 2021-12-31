@@ -81,10 +81,7 @@ public class PlayerAnimationController : NetworkBehaviour
         {
             _localHunterAnimator.SetBool(RIFLE_KEY, _isHoldingRifle);
             _localHunterAnimator.SetBool(PISTOL_KEY, !_isHoldingRifle);
-
-            _localHunterAnimator.SetFloat(VERTICAL_AIM_KEY, _verticalAim);
-            _localHunterAnimator.SetFloat(FORWARD_SPEED_KEY, _forwardSpeed);
-            _localHunterAnimator.SetFloat(RIGHT_SPEED_KEY, _rightSpeed);
+            _localHunterAnimator.SetFloat(VERTICAL_AIM_KEY, 0.5f);
         }
         else
         {

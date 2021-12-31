@@ -15,7 +15,6 @@ public enum eGunType
 
 public class PlayerGunController : NetworkBehaviour
 {
-
     [SerializeField] private GameObject _pistol;
     [SerializeField] private GameObject _rifle;
     [SerializeField] private GameObject _shotgun;
@@ -24,6 +23,23 @@ public class PlayerGunController : NetworkBehaviour
 
     public NetworkVariable<eGunType> _currentGun;
     private eGunType _equippedGun = eGunType.None;
+    private GameObject _equippedGunGameObject = null;
+
+    public eGunType EquippedGunType
+    {
+        get
+        {
+            return _equippedGun;
+        }
+    }
+
+    public GameObject EquippedGun
+    {
+        get
+        {
+            return _equippedGunGameObject;
+        }
+    }
 
     private void Awake()
     {
@@ -48,19 +64,27 @@ public class PlayerGunController : NetworkBehaviour
         {
             case eGunType.Pistol:
                 _pistol.SetActive(true);
+                _equippedGunGameObject = _pistol;
                 break;
             case eGunType.Rifle:
                 _rifle.SetActive(true);
+                _equippedGunGameObject = _rifle;
                 break;
             case eGunType.Shotgun:
                 _shotgun.SetActive(true);
+                _equippedGunGameObject = _shotgun;
                 break;
             case eGunType.RPG:
                 _rpg.SetActive(true);
+                _equippedGunGameObject = _rpg;
                 break;
             case eGunType.Sniper:
                 _sniper.SetActive(true);
+                _equippedGunGameObject = _sniper;
                 break;
         }
+
+        _equippedGun = gunType;
+        
     }
 }
