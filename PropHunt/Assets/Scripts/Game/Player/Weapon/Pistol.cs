@@ -12,7 +12,9 @@ public class Pistol : Gun
         ray.direction = lookDirection;
 
         FireServerRpc(ray);
-        FireVFX(ray);
+
+        if (IsOwner)
+            FireVFX(ray);
 
         base.Fire(lookPoint, lookDirection);
     }
@@ -40,6 +42,9 @@ public class Pistol : Gun
 
             VFXController.Instance.SpawnBulletHit(hitPoint, hitNormal, hitObject.transform, hitMaterial);
         }
+
+        SpawnMuzzleFlash();
+        SpawnBulletEffect();
     }
 
     [ServerRpc]
@@ -53,12 +58,14 @@ public class Pistol : Gun
 
             if (hitPlayerController != null)
             {
-                hitPlayerController.TakeDamageServerRpc(OwnerClientId, _gunDamage);
+                    hitPlayerController.TakeDamage(OwnerClientId, _gunDamage);
             }
             else
             {
-                UserPlayerController.TakeSelfDamageServerRpc(_gunSelfDamage);
+                    UserPlayerController.TakeSelfDamage(_gunSelfDamage);
             }
+
+            FireClientRpc(ray);
         }
     }
 
@@ -67,7 +74,6 @@ public class Pistol : Gun
     {
         if (IsOwner) return;
 
-        SpawnMuzzleFlash();
-        SpawnBulletEffect();
+        FireVFX(ray);
     }
 }

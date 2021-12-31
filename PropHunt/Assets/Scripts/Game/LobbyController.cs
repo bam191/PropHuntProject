@@ -108,16 +108,16 @@ public class LobbyController : Singleton<LobbyController>
 
     private void OnServerStarted()
     {
-        Debug.Log("Server started");
+        Debug.LogError("Server started");
     }
 
     private void OnClientConnected(ulong clientId)
     {
-        Debug.Log("Client connected, id: " + clientId);
+        Debug.LogError("Client connected, id: " + clientId);
     }
 
     private void OnClientDisconnect(ulong clientId)
     {
-        Debug.Log("Client disconnected, id: " + clientId);
+        Debug.LogError("Client disconnected, id: " + clientId);
     }
 }

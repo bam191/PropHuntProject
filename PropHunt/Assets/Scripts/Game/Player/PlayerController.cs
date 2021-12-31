@@ -94,5 +94,31 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void TakeDamage(ulong damageDealer, float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
+    }
+
+    public void TakeSelfDamage(float damage)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value -= damage;
+            if (_health.Value <= 0)
+            {
+                _deaths.Value += 1;
+                //dead
+            }
+        }
+    }
+
     #endregion
 }
