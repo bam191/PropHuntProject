@@ -31,3 +31,6 @@ MonoBehaviour:
   - ElementType: 1
     MaterialType: 6
     Prefab: {fileID: 100002, guid: 957385c45b877e645a128e11a3efb2f9, type: 3}
+  - ElementType: 3
+    MaterialType: 0
+    Prefab: {fileID: 100004, guid: b46890100828db6429ff69c322b45893, type: 3}

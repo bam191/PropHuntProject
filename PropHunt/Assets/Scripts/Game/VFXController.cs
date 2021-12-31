@@ -61,6 +61,21 @@ public class VFXController : Singleton<VFXController>
         CleanUpExtraVFX();
     }
 
+    public void SpawnExplosion(Vector3 hitPoint)
+    {
+        GameObject explosion = Instantiate<GameObject>(_vfxData.GetGameObject(VFXData.eVFXElementType.PointEffect, ObjectMaterial.eMaterial.None));
+        SpawnedVFXData vfxData = new SpawnedVFXData();
+        vfxData.SpawnTime = Time.time;
+        vfxData.VFXObject = explosion;
+        vfxData.LifeTime = 20;
+
+        explosion.transform.position = hitPoint;
+
+        _spawnedVFX.Add(vfxData);
+
+        CleanUpExtraVFX();
+    }
+
     private void CleanUpExtraVFX()
     {
         if (_spawnedVFX.Count >= MAX_VFX)
@@ -75,6 +90,6 @@ public class VFXController : Singleton<VFXController>
 
     private void RemoveFirstVFX()
     {
-
+        
     }
 }

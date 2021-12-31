@@ -109,12 +109,28 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         if (!CanFireWeapon()) return;
 
-        if (InputManager.GetKey(PlayerConstants.FireWeapon))
+        if (_equippedGun != null && _equippedGun.GetFireMode() == eGunFireMode.FullAuto)
         {
-            if (_equippedGun != null && _equippedGun.CanFire())
+            if (InputManager.GetKey(PlayerConstants.FireWeapon))
             {
-                _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward);
+                FireGun();
             }
+        }
+        else
+        {
+            if (InputManager.GetKeyDown(PlayerConstants.FireWeapon))
+            {
+                FireGun();
+            }
+        }
+    }
+
+    private void FireGun()
+    {
+        if (_equippedGun != null && _equippedGun.CanFire())
+        {
+            _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward);
+            _playerController.AddRecoil(_equippedGun.GetRecoil(), _equippedGun.GetRecoilMultiplier());
         }
     }
 

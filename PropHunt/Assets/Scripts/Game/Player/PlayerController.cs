@@ -11,7 +11,8 @@ public class PlayerController : NetworkBehaviour
 
     private PlayerModelController _playerModelController;
     private PlayerAnimationController _playerAnimationController;
-    
+    private PlayerCameraController _playerCameraController;
+
     public NetworkVariable<bool> _requestCrouch;
     public NetworkVariable<Vector3> _requestedPosition;
     public NetworkVariable<Vector3> _requestedRotation;
@@ -26,6 +27,7 @@ public class PlayerController : NetworkBehaviour
     {
         _playerModelController = GetComponentInChildren<PlayerModelController>();
         _playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
+        _playerCameraController = GetComponentInChildren<PlayerCameraController>();
     }
 
     private void Start()
@@ -54,6 +56,11 @@ public class PlayerController : NetworkBehaviour
     public void SetVelocity(Vector3 velocity)
     {
         _playerAnimationController.SetVelocity(velocity);
+    }
+
+    public void AddRecoil(float recoil, float recoilMultiplier)
+    {
+        _playerCameraController.AddRecoil(recoil, recoilMultiplier);
     }
     
     #region  RPCs
@@ -116,6 +123,18 @@ public class PlayerController : NetworkBehaviour
             {
                 _deaths.Value += 1;
                 //dead
+            }
+        }
+    }
+
+    public void Heal(float health)
+    {
+        if (_health.Value > 0)
+        {
+            _health.Value += health;
+            if (_health.Value > 100)
+            {
+                _health.Value = 100;
             }
         }
     }

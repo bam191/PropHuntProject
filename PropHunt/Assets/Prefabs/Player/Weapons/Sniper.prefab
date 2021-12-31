@@ -46,14 +46,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gunType: 5
+  _fireMode: 0
   _hitLayers:
     serializedVersion: 2
     m_Bits: 129
-  _gunDamage: 0
-  _gunSelfDamage: 0
-  _range: 0
+  _gunDamage: 50
+  _gunSelfDamage: 20
+  _range: 100
   _fireRate: 1
-  _recoilAmount: 0
+  _recoilAmount: 10
+  _recoilMultiplier: 1
   _switchTime: 0
   _aimTime: 0
 --- !u!1 &1512114766856548301
