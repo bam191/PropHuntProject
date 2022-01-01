@@ -54,9 +54,10 @@ MonoBehaviour:
   _gunDamage: 50
   _gunSelfDamage: 20
   _range: 100
-  _fireRate: 1
+  _fireRate: 2
   _recoilAmount: 10
-  _recoilMultiplier: 1
+  _recoilMultiplier: 2
+  _recoilSpread: 1
   _switchTime: 0
   _aimTime: 0
 --- !u!1 &1512114766856548301

@@ -7,30 +7,19 @@ public class RPG : Gun
 {
     [SerializeField] private float _explosionRadius;
 
-    public override void Fire(Vector3 lookPoint, Vector3 lookDirection)
-    {
-        Ray ray = new Ray();
-        ray.origin = lookPoint;
-        ray.direction = lookDirection;
-
-        FireServerRpc(ray);
-
-        if (IsOwner)
-            FireVFX(new Ray[] { ray });
-
-        base.Fire(lookPoint, lookDirection);
-    }
-
     public override void FireVFX(Ray[] rays)
     {
         foreach (Ray ray in rays)
         {
-            SpawnBulletEffect(ray);
-
             if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
             {
                 Vector3 hitPoint = raycastHit.point;
                 VFXController.Instance.SpawnExplosion(hitPoint);
+                SpawnBulletEffect(ray, hitPoint);
+            }
+            else
+            {
+                SpawnBulletEffect(ray, ray.origin + (ray.direction * _range));
             }
         }
 

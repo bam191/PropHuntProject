@@ -5,17 +5,5 @@ using UnityEngine;
 
 public class Pistol : Gun
 {
-    public override void Fire(Vector3 lookPoint, Vector3 lookDirection)
-    {
-        Ray ray = new Ray();
-        ray.origin = lookPoint;
-        ray.direction = lookDirection;
-
-        FireServerRpc(ray);
-
-        if (IsOwner)
-            FireVFX(new Ray[]{ray});
-
-        base.Fire(lookPoint, lookDirection);
-    }
+    
 }

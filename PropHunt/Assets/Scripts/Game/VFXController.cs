@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VFXController : Singleton<VFXController>
 {
-    private const int MAX_VFX = 50;
+    private const int MAX_VFX = 100;
 
     [SerializeField] private VFXData _vfxData;
 
@@ -82,11 +82,28 @@ public class VFXController : Singleton<VFXController>
         SpawnedVFXData vfxData = new SpawnedVFXData();
         vfxData.SpawnTime = Time.time;
         vfxData.VFXObject = muzzleFlash;
-        vfxData.LifeTime = 1;
+        vfxData.LifeTime = 0.25f;
 
         muzzleFlash.transform.parent = gunBarrel;
         muzzleFlash.transform.position = gunBarrel.position;
         muzzleFlash.transform.rotation = gunBarrel.rotation;
+
+        _spawnedVFX.Add(vfxData);
+
+        CleanUpExtraVFX();
+    }
+
+    public void SpawnBulletTrail(Vector3 startPoint, Vector3 endPoint, eGunType gunType)
+    {
+        GameObject bulletTrail = Instantiate<GameObject>(_vfxData.GetBulletTrail(gunType));
+        SpawnedVFXData vfxData = new SpawnedVFXData();
+        vfxData.SpawnTime = Time.time;
+        vfxData.VFXObject = bulletTrail;
+        vfxData.LifeTime = 0.025f;
+
+        LineRenderer lineRenderer = bulletTrail.GetComponent<LineRenderer>();
+        lineRenderer.SetPosition(0, startPoint);
+        lineRenderer.SetPosition(1, endPoint);
 
         _spawnedVFX.Add(vfxData);
 

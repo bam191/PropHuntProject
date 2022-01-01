@@ -223,6 +223,7 @@ MonoBehaviour:
   _fireRate: 10
   _recoilAmount: 2
   _recoilMultiplier: 1
+  _recoilSpread: 1
   _switchTime: 0
   _aimTime: 0
 --- !u!1 &1748277932983872

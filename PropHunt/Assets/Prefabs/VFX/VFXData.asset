@@ -39,3 +39,22 @@ MonoBehaviour:
     Prefab: {fileID: 100006, guid: 0661276422528d74d8c9894abad93242, type: 3}
   - GunType: 5
     Prefab: {fileID: 100006, guid: ed543e3b907985c45b46b80d2e39e6e9, type: 3}
+  _bulletTrails:
+  - GunType: 0
+    Prefab: {fileID: 6522455233004151876, guid: 5de9b7f173aecbe41b3dced947bdbdee,
+      type: 3}
+  - GunType: 1
+    Prefab: {fileID: 6522455233004151876, guid: 5de9b7f173aecbe41b3dced947bdbdee,
+      type: 3}
+  - GunType: 2
+    Prefab: {fileID: 6522455233004151876, guid: 9fe870b7dd9cd734a96b5d157bffa20f,
+      type: 3}
+  - GunType: 3
+    Prefab: {fileID: 6522455233004151876, guid: b63e9fabf49fc80469be07872c061f5a,
+      type: 3}
+  - GunType: 4
+    Prefab: {fileID: 6522455233004151876, guid: 670f6be1004fa00418ee46602c23f086,
+      type: 3}
+  - GunType: 5
+    Prefab: {fileID: 6522455233004151876, guid: 886d657207d5bd748b074f2f9f184182,
+      type: 3}

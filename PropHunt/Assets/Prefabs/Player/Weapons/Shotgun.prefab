@@ -56,7 +56,8 @@ MonoBehaviour:
   _range: 20
   _fireRate: 3
   _recoilAmount: 5
-  _recoilMultiplier: 1
+  _recoilMultiplier: 2
+  _recoilSpread: 1
   _switchTime: 0
   _aimTime: 0
   _pellets: 8

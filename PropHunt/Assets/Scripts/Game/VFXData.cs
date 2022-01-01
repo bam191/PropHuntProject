@@ -35,9 +35,17 @@ public class VFXData : ScriptableObject
         public GameObject Prefab;
     }
 
+    [Serializable]
+    public struct BulletTrail
+    {
+        public eGunType GunType;
+        public GameObject Prefab;
+    }
+
     [SerializeField] private List<BulletImpact> _bulletImpacts = new List<BulletImpact>();
     [SerializeField] private List<Explosion> _explosions = new List<Explosion>();
     [SerializeField] private List<MuzzleFlash> _muzzleFlashes = new List<MuzzleFlash>();
+    [SerializeField] private List<BulletTrail> _bulletTrails = new List<BulletTrail>();
 
     public GameObject GetBulletImpact(ObjectMaterial.eMaterial materialType)
     {
@@ -70,6 +78,20 @@ public class VFXData : ScriptableObject
     public GameObject GetMuzzleFlash(eGunType gunType)
     {
         foreach (MuzzleFlash dataElement in _muzzleFlashes)
+        {
+            if (dataElement.GunType == gunType || gunType == eGunType.None)
+            {
+                return dataElement.Prefab;
+            }
+        }
+
+        Debug.LogError($"Couldn't find muzzle flash for type material {gunType}");
+        return null;
+    }
+
+    public GameObject GetBulletTrail(eGunType gunType)
+    {
+        foreach (BulletTrail dataElement in _bulletTrails)
         {
             if (dataElement.GunType == gunType || gunType == eGunType.None)
             {
