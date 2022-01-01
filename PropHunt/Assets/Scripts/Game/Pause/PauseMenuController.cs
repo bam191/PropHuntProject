@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PauseMenuController : MonoBehaviour
+public class PauseMenuController : Singleton<PauseMenuController>
 {
     public enum ePauseMenuState
     {
@@ -17,16 +18,50 @@ public class PauseMenuController : MonoBehaviour
 
     private ePauseMenuState _currentState = ePauseMenuState.PauseMenu;
 
+    public ePauseMenuState CurrentState
+    {
+        get
+        {
+            return _currentState;
+        }
+    }
+
     [SerializeField] private Popup _pausePopup;
 
     private Popup _settingsPopup;
     [SerializeField] private Transform _settingsParent;
     [SerializeField] private GameObject _settingsPopupPrefab;
 
-    private void Awake()
+    public override void Initialize()
     {
         InitSettings();
         SetState(ePauseMenuState.None);
+
+        base.Initialize();
+    }
+
+    private void OnDestroy()
+    {
+        InputController.Instance.SetPaused(false);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(PlayerConstants.PauseMenu))
+        {
+            switch(_currentState)
+            {
+                case ePauseMenuState.None:
+                    SetState(ePauseMenuState.PauseMenu);
+                    break;
+                case ePauseMenuState.SettingsPopup:
+                    SetState(ePauseMenuState.PauseMenu);
+                    break;
+                case ePauseMenuState.PauseMenu:
+                    SetState(ePauseMenuState.None);
+                    break;
+            }
+        }
     }
 
     public void SetState(ePauseMenuState state)
@@ -44,6 +79,15 @@ public class PauseMenuController : MonoBehaviour
             case ePauseMenuState.SettingsPopup:
                 _settingsPopup.Show();
                 break;
+        }
+
+        if (_currentState == ePauseMenuState.None && state != ePauseMenuState.None)
+        {
+            InputController.Instance.SetPaused(true);
+        }
+        else if (state == ePauseMenuState.None)
+        {
+            InputController.Instance.SetPaused(false);
         }
 
         _currentState = state;

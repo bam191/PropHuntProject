@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2662143965019745594}
   - component: {fileID: 9195585699015462308}
   - component: {fileID: 7226522467469374778}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: RightArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3668387606158864475}
   - component: {fileID: 318536019227005547}
   - component: {fileID: 5237699244220264002}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: BasePropModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 6806748821705839613}
   - component: {fileID: 9101992287935597143}
   - component: {fileID: 6777334113730120289}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: Nose
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 7595978085645720850}
   - component: {fileID: 9163590862003118593}
   - component: {fileID: 8218883571043672384}
-  m_Layer: 6
+  m_Layer: 7
   m_Name: LeftArm
   m_TagString: Untagged
   m_Icon: {fileID: 0}

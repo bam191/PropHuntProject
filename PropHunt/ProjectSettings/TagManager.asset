@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -11,8 +12,11 @@ TagManager:
   - 
   - Water
   - UI
-  - Player
+  - Hunter
   - Prop
+  - MapObject
+  - Player
+  - LocalPlayer
   - 
   - 
   - 
@@ -31,11 +35,8 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - HunterTeam
+  - PropTeam
   - EditorOnly
   m_SortingLayers:
   - name: Default

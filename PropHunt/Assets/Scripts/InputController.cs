@@ -12,11 +12,13 @@ public class InputController : Singleton<InputController>
         PropFrozen,
         PropFreecam,
         Hunter,
+        HunterFreecam,
         HunterFrozen,
         Spectate
     }
 
     private eInputState _currentInputState = eInputState.Hunter;
+    private bool _isPaused;
 
     public eInputState InputState
     {
@@ -26,14 +28,28 @@ public class InputController : Singleton<InputController>
         }
     }
 
+    public bool IsPaused
+    {
+        get
+        {
+            return _isPaused;
+        }
+    }
+
     public override void Initialize()
     {
         DontDestroyOnLoad(gameObject);
+        base.Initialize();
     }
 
     public void SetInputState(eInputState inputState)
     {
         _currentInputState = inputState;
+    }
+
+    public void SetPaused(bool isPaused)
+    {
+        _isPaused = isPaused;
     }
 }
 
