@@ -24,6 +24,7 @@ public class Gun : NetworkBehaviour
     [SerializeField] protected float _fireRate;
     [SerializeField] protected float _recoilAmount;
     [SerializeField] protected float _recoilMultiplier;
+    [SerializeField] protected float _recoilSpread;
     [SerializeField] protected float _switchTime;
     [SerializeField] protected float _aimTime;
 
@@ -47,9 +48,25 @@ public class Gun : NetworkBehaviour
     protected float _lastEndAimTime;
     protected float _lastSwitchWeaponTime;
 
-
-    public virtual void Fire(Vector3 lookPoint, Vector3 lookDirection)
+    public eGunType GunType
     {
+        get
+        {
+            return _gunType;
+        }
+    }
+
+    public virtual void Fire(Vector3 lookPoint, Vector3 lookDirection, float recoilMultiplier)
+    {
+        Ray ray = new Ray();
+        ray.origin = lookPoint;
+        ray.direction = lookDirection + (Random.insideUnitSphere * 0.01f * recoilMultiplier * _recoilSpread);
+
+        FireServerRpc(ray);
+
+        if (IsOwner)
+            FireVFX(new Ray[] { ray });
+
         _lastFireTime = Time.time;
     }
 
@@ -62,10 +79,10 @@ public class Gun : NetworkBehaviour
     {
         VFXController.Instance.SpawnMuzzleFlash(_gunBarrel, _gunType);
     }
-    
-    protected virtual void SpawnBulletEffect(Ray ray)
-    {
 
+    protected virtual void SpawnBulletEffect(Ray ray, Vector3 hitPoint)
+    {
+        VFXController.Instance.SpawnBulletTrail(_gunBarrel.position, hitPoint, _gunType);
     }
 
     public virtual void EnterAiming()
@@ -142,36 +159,40 @@ public class Gun : NetworkBehaviour
     {
         foreach (Ray ray in rays)
         {
-            SpawnBulletImpact(ray);
-            SpawnBulletEffect(ray);
+            if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
+            {
+                GameObject hitObject = raycastHit.collider.gameObject;
+
+                ObjectMaterial objectMaterial = hitObject.GetComponentInParent<ObjectMaterial>();
+                ObjectMaterial.eMaterial hitMaterial = ObjectMaterial.eMaterial.None;
+                if (objectMaterial == null)
+                {
+                    objectMaterial = hitObject.GetComponentInChildren<ObjectMaterial>();
+                }
+
+                if (objectMaterial != null)
+                {
+                    hitMaterial = objectMaterial.GetMaterial();
+                }
+
+                Vector3 hitPoint = raycastHit.point;
+                Vector3 hitNormal = raycastHit.normal;
+
+                SpawnBulletEffect(ray, hitPoint);
+                SpawnBulletImpact(hitPoint, hitNormal, hitObject.transform, hitMaterial);
+            }
+            else
+            {
+                SpawnBulletEffect(ray, ray.origin + (ray.direction * _range));
+            }
         }
 
         SpawnMuzzleFlash();
     }
 
-    protected virtual void SpawnBulletImpact(Ray ray)
+    protected virtual void SpawnBulletImpact(Vector3 hitPoint, Vector3 hitNormal, Transform parentObject, ObjectMaterial.eMaterial hitMaterial)
     {
-        if (Physics.Raycast(ray, out var raycastHit, _range, _hitLayers))
-        {
-            GameObject hitObject = raycastHit.collider.gameObject;
-
-            ObjectMaterial objectMaterial = hitObject.GetComponentInParent<ObjectMaterial>();
-            ObjectMaterial.eMaterial hitMaterial = ObjectMaterial.eMaterial.None;
-            if (objectMaterial == null)
-            {
-                objectMaterial = hitObject.GetComponentInChildren<ObjectMaterial>();
-            }
-
-            if (objectMaterial != null)
-            {
-                hitMaterial = objectMaterial.GetMaterial();
-            }
-
-            Vector3 hitPoint = raycastHit.point;
-            Vector3 hitNormal = raycastHit.normal;
-
-            VFXController.Instance.SpawnBulletHit(hitPoint, hitNormal, hitObject.transform, hitMaterial);
-        }
+        VFXController.Instance.SpawnBulletHit(hitPoint, hitNormal, parentObject, hitMaterial);
     }
 
     [ServerRpc]

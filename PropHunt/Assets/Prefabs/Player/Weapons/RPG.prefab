@@ -57,6 +57,7 @@ MonoBehaviour:
   _fireRate: 0.5
   _recoilAmount: 10
   _recoilMultiplier: 1
+  _recoilSpread: 1
   _switchTime: 0
   _aimTime: 0
   _explosionRadius: 10

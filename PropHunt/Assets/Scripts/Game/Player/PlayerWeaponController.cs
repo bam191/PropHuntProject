@@ -129,18 +129,19 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         if (_equippedGun != null && _equippedGun.CanFire())
         {
-            _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward);
+            _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward, _cameraController.GetRecoilMultiplier());
             _playerController.AddRecoil(_equippedGun.GetRecoil(), _equippedGun.GetRecoilMultiplier());
         }
     }
 
     private void EquipGun(eGunType gunType)
     {
-        if (_equippedGun == null || _equippedGun.CanSwitch())
+        if (_equippedGun == null || (_equippedGun.CanSwitch() && _equippedGun.GunType != gunType))
         {
             _equippedGun?.SwitchWeapon();
             _localGunController.SetGunState(gunType);
             _equippedGun = _localGunController.EquippedGun.GetComponent<Gun>();
+            CrosshairController.Instance.SetCrosshairType(gunType);
 
             EquipGunServerRpc(gunType);
         }

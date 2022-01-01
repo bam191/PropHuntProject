@@ -7,7 +7,7 @@ public class Shotgun : Gun
 {
     [SerializeField] private int _pellets;
     
-    public override void Fire(Vector3 lookPoint, Vector3 lookDirection)
+    public override void Fire(Vector3 lookPoint, Vector3 lookDirection, float recoilMultiplier)
     {
         Ray ray = new Ray();
         ray.origin = lookPoint;
@@ -25,8 +25,6 @@ public class Shotgun : Gun
 
         if (IsOwner)
             FireVFX(pelletRays.ToArray());
-
-        base.Fire(lookPoint, lookDirection);
     }
 
     [ServerRpc]

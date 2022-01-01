@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class PlayerCameraController : MonoBehaviour
 {
-    public GameObject playerModel;
-
-    [NonSerialized]
-    public float sensitivityMultiplier;
+    private float sensitivityMultiplier;
 
     public Camera playerCamera;
     public Quaternion TargetRotation { private set; get; }
@@ -21,7 +18,7 @@ public class PlayerCameraController : MonoBehaviour
     private const float RECOIL_DECAY_ACCELERATION = 75;
     private const float RECOIL_MULTIPLIER_DECAY_ACCELERATION = 75;
     private const float MAX_RECOIL = 25;
-    private const float MAX_SIDE_RECOIL = 10;
+    private const float MAX_SIDE_RECOIL = 15;
     private const float MAX_RECOIL_MULTIPLIER = 5;
 
     private Quaternion DefaultRotation = Quaternion.identity;
@@ -65,16 +62,27 @@ public class PlayerCameraController : MonoBehaviour
             return;
         }
 
+        UpdateRotation();
+        UpdateRecoil();
+
+        CrosshairController.Instance.SetSeparationMultiplier(_recoilMultiplier);
+    }
+
+    private void UpdateRotation()
+    {
         // Rotate the camera.
         var rotation = new Vector2(-Input.GetAxis(PlayerConstants.MouseY), Input.GetAxis(PlayerConstants.MouseX));
-        var targetEuler = TargetRotation.eulerAngles + (Vector3) rotation * sensitivityMultiplier * BASE_SENSITIVITY_MULTIPLIER;
+        var targetEuler = TargetRotation.eulerAngles + (Vector3)rotation * sensitivityMultiplier * BASE_SENSITIVITY_MULTIPLIER;
         if (targetEuler.x > HALF_ROTATION)
         {
             targetEuler.x -= FULL_ROTATION;
         }
         targetEuler.x = Mathf.Clamp(targetEuler.x, -MAX_CAMERA_X_ROTATION, MAX_CAMERA_X_ROTATION);
         TargetRotation = Quaternion.Euler(targetEuler);
+    }
 
+    private void UpdateRecoil()
+    {
         _currentRecoilDecay += Time.deltaTime * RECOIL_DECAY_ACCELERATION;
         _recoilMultiplierDecay += Time.deltaTime * RECOIL_MULTIPLIER_DECAY_ACCELERATION;
         _currentRecoil -= Time.deltaTime * _currentRecoilDecay;
@@ -82,7 +90,7 @@ public class PlayerCameraController : MonoBehaviour
         if (_currentSideRecoil < 0)
         {
             _currentSideRecoil += Time.deltaTime * _currentRecoilDecay;
-            if (_currentSideRecoil > 0 )
+            if (_currentSideRecoil > 0)
             {
                 _currentSideRecoil = 0;
             }
@@ -110,9 +118,20 @@ public class PlayerCameraController : MonoBehaviour
         }
     }
 
+    public float GetRecoilMultiplier()
+    {
+        return _recoilMultiplier;
+    }
+
+    public Quaternion GetRecoilRotation()
+    {
+        Quaternion rotation = TargetRotation * Quaternion.Euler(-_currentRecoil, _currentSideRecoil, 0);
+        return rotation;
+    }
+
     public void LateUpdate()
     {
-        playerCamera.transform.rotation = TargetRotation * Quaternion.Euler(-_currentRecoil, _currentSideRecoil, 0);
+        playerCamera.transform.rotation = GetRecoilRotation();
 
         Quaternion newRotation = TargetRotation;
         newRotation.eulerAngles = new Vector3(0, newRotation.eulerAngles.y, 0);
