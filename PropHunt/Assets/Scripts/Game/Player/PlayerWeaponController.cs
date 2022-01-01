@@ -29,21 +29,21 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         InputController.eInputState currentState = InputController.Instance.InputState;
 
-        return currentState == InputController.eInputState.Hunter;
+        return currentState == InputController.eInputState.Hunter && !InputController.Instance.IsPaused;
     }
 
     private bool CanFireWeapon()
     {
         InputController.eInputState currentState = InputController.Instance.InputState;
 
-        return currentState == InputController.eInputState.Hunter;
+        return currentState == InputController.eInputState.Hunter && !InputController.Instance.IsPaused;
     }
 
     private bool CanAimWeapon()
     {
         InputController.eInputState currentState = InputController.Instance.InputState;
 
-        return currentState == InputController.eInputState.Hunter;
+        return currentState == InputController.eInputState.Hunter && !InputController.Instance.IsPaused;
     }
 
     private void Update()
@@ -129,7 +129,7 @@ public class PlayerWeaponController : NetworkBehaviour
     {
         if (_equippedGun != null && _equippedGun.CanFire())
         {
-            _equippedGun.Fire(_cameraController.playerCamera.gameObject.transform.position, _cameraController.playerCamera.gameObject.transform.forward, _cameraController.GetRecoilMultiplier());
+            _equippedGun.Fire(_cameraController.FirstPersonCamera.gameObject.transform.position, _cameraController.FirstPersonCamera.gameObject.transform.forward, _cameraController.GetRecoilMultiplier());
             _playerController.AddRecoil(_equippedGun.GetRecoil(), _equippedGun.GetRecoilMultiplier());
         }
     }

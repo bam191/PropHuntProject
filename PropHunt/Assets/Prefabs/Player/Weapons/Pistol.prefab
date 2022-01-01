@@ -215,7 +215,7 @@ MonoBehaviour:
   _fireMode: 1
   _hitLayers:
     serializedVersion: 2
-    m_Bits: 193
+    m_Bits: 385
   _gunBarrel: {fileID: 6407333416973028441}
   _gunDamage: 1
   _gunSelfDamage: 1

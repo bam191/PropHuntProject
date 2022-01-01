@@ -18,7 +18,7 @@ public class PlayerShooting : NetworkBehaviour
     
     public void Fire()
     {
-        Ray ray = _playerCameraController.playerCamera.ViewportPointToRay(new Vector3(0.5f,0.5f,0));
+        Ray ray = _playerCameraController.FirstPersonCamera.ViewportPointToRay(new Vector3(0.5f,0.5f,0));
 
         if (Physics.Raycast(ray, out var raycastHit, shootDistance, playerLayerMask))
         {

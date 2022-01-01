@@ -29,7 +29,7 @@ public class PlayerPropInteraction : MonoBehaviour
         
         if (InputManager.GetKeyDown(PlayerConstants.Interact))
         {
-            Ray ray = _playerCameraController.playerCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _playerCameraController.FirstPersonCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var raycastHit, propInteractionDistance, propLayerMask))
             {
                 //_playerModelController.SetModel($"Props/{raycastHit.collider.gameObject.name}");

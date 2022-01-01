@@ -128,8 +128,11 @@ public class PlayerMovementController : NetworkBehaviour
         bool shouldCrouch = false;
         if (IsLocalPlayer)
         {
-            shouldCrouch = InputManager.GetKey(PlayerConstants.Crouch);
-            _currentInputs.requestCrouch = shouldCrouch;
+            if (CanMove())
+            {
+                shouldCrouch = InputManager.GetKey(PlayerConstants.Crouch);
+                _currentInputs.requestCrouch = shouldCrouch;
+            }
         }
         else
         {
@@ -194,11 +197,11 @@ public class PlayerMovementController : NetworkBehaviour
     private void DampenCamera()
     {
         Vector3 endOffset = crouching ? PlayerConstants.CrouchingCameraOffset : PlayerConstants.StandingCameraOffset;
-        Vector3 currentOffset = _playerCameraController.playerCamera.transform.localPosition;
+        Vector3 currentOffset = _playerCameraController.FirstPersonCamera.transform.localPosition;
         float v = 0;
         float yOffset = Mathf.SmoothDamp(currentOffset.y, endOffset.y, ref v, Time.deltaTime);
         Vector3 newOffset = new Vector3(0, yOffset, 0);
-        _playerCameraController.playerCamera.transform.localPosition = newOffset;
+        _playerCameraController.FirstPersonCamera.transform.localPosition = newOffset;
     }
     #endregion
 
@@ -217,7 +220,10 @@ public class PlayerMovementController : NetworkBehaviour
         bool shouldJump = false;
         if (IsLocalPlayer)
         {
-            shouldJump = InputManager.GetKey(PlayerConstants.Jump);
+            if (CanMove())
+            {
+                shouldJump = InputManager.GetKey(PlayerConstants.Jump);
+            }
         }
 
         if (grounded && shouldJump)
@@ -255,11 +261,13 @@ public class PlayerMovementController : NetworkBehaviour
         }
 
         //Get the velocity vector in world space coordinates, by rotating around the camera's y-axis
-        return Quaternion.AngleAxis(_playerCameraController.playerCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
+        return Quaternion.AngleAxis(_playerCameraController.FirstPersonCamera.transform.rotation.eulerAngles.y, Vector3.up) * inputVelocity;
     }
 
     private Vector3 GetInputVelocity(float moveSpeed)
     {
+        if (!CanMove()) return Vector3.zero;
+        
         float horizontalSpeed = 0;
         float verticalSpeed = 0;
 
@@ -406,8 +414,20 @@ public class PlayerMovementController : NetworkBehaviour
         controller.enabled = !isNoClipping;
     }
 
+    private bool CanMove()
+    {
+        InputController.eInputState inputState = InputController.Instance.InputState;
+
+        bool canMove = inputState != InputController.eInputState.HunterFrozen && inputState != InputController.eInputState.PropFrozen
+        && inputState != InputController.eInputState.None;
+
+        return canMove && !InputController.Instance.IsPaused;
+    }
+
     private void NoClipMove()
     {
+        if (!CanMove()) return;
+        
         bool shouldMoveLeft = InputManager.GetKey(PlayerConstants.Left);
         bool shouldMoveRight = InputManager.GetKey(PlayerConstants.Right);
         bool shouldMoveBack = InputManager.GetKey(PlayerConstants.Back);
@@ -415,19 +435,19 @@ public class PlayerMovementController : NetworkBehaviour
         
         if (shouldMoveForward)
         {
-            transform.position += _playerCameraController.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += _playerCameraController.FirstPersonCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveBack)
         {
-            transform.position += -_playerCameraController.playerCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += -_playerCameraController.FirstPersonCamera.transform.forward * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveRight)
         {
-            transform.position += _playerCameraController.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += _playerCameraController.FirstPersonCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
         if (shouldMoveLeft)
         {
-            transform.position += -_playerCameraController.playerCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
+            transform.position += -_playerCameraController.FirstPersonCamera.transform.right * Time.deltaTime * PlayerConstants.NoClipMoveSpeed;
         }
     }
 

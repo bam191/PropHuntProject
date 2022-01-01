@@ -33,6 +33,22 @@ public class MainMenuController : Singleton<MainMenuController>
         SetState(eMainMenuState.MainMenu);
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(PlayerConstants.PauseMenu))
+        {
+            switch (_currentState)
+            {
+                case eMainMenuState.ConnectionPopup:
+                    SetState(eMainMenuState.MainMenu);
+                    break;
+                case eMainMenuState.SettingsPopup:
+                    SetState(eMainMenuState.MainMenu);
+                    break;
+            }
+        }
+    }
+
     public void SetState(eMainMenuState state)
     {
         if (_currentState == state) return;

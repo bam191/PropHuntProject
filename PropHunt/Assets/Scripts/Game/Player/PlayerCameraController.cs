@@ -1,13 +1,41 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class PlayerCameraController : MonoBehaviour
+public class PlayerCameraController : NetworkBehaviour
 {
     private float sensitivityMultiplier;
 
-    public Camera playerCamera;
+    [SerializeField] private Camera _firstPersonCamera;
+    [SerializeField] private Camera _thirdPersonCamera;
+    [SerializeField] private Camera _freeCamera;
+
+    public Camera FirstPersonCamera
+    {
+        get
+        {
+            return _firstPersonCamera;
+        }
+    }
+
+    public Camera ThirdPersonCamera
+    {
+        get
+        {
+            return _thirdPersonCamera;
+        }
+    }
+
+    public Camera FreeCamera
+    {
+        get
+        {
+            return _freeCamera;
+        }
+    }
+
     public Quaternion TargetRotation { private set; get; }
 
     private const float MAX_CAMERA_X_ROTATION = 90;
@@ -31,8 +59,7 @@ public class PlayerCameraController : MonoBehaviour
 
     private void Awake()
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        LockCursor();
 
         TargetRotation = transform.rotation;
     }
@@ -40,21 +67,43 @@ public class PlayerCameraController : MonoBehaviour
     private void Start()
     {
         sensitivityMultiplier = OptionsPreferencesManager.GetSensitivity();
-        playerCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
+
+        _firstPersonCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
+        _thirdPersonCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
+        _freeCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
+
+        _thirdPersonCamera.gameObject.SetActive(false);
+        _freeCamera.gameObject.SetActive(false);
+    }
+
+    public void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void UnlockCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private bool CanMoveCamera()
     {
         InputController.eInputState inputState = InputController.Instance.InputState;
-
-        return inputState == InputController.eInputState.Freecam
-        || inputState == InputController.eInputState.Hunter
-        || inputState == InputController.eInputState.Prop
+        bool canMoveCamera = inputState == InputController.eInputState.Hunter
+        || inputState == InputController.eInputState.HunterFreecam
+        || inputState == InputController.eInputState.PropFreecam
+        || inputState == InputController.eInputState.Freecam
         || inputState == InputController.eInputState.Spectate;
+
+        bool isPaused = InputController.Instance.IsPaused;
+
+        return canMoveCamera && !isPaused;
     }
 
     private void Update()
-    {
+    {        
         if (!CanMoveCamera()) return;
 
         if (Time.timeScale == 0)
@@ -131,11 +180,11 @@ public class PlayerCameraController : MonoBehaviour
 
     public void LateUpdate()
     {
-        playerCamera.transform.rotation = GetRecoilRotation();
+        _firstPersonCamera.transform.rotation = GetRecoilRotation();
+        transform.rotation = Quaternion.Euler(0, TargetRotation.eulerAngles.y, 0);
 
-        Quaternion newRotation = TargetRotation;
-        newRotation.eulerAngles = new Vector3(0, newRotation.eulerAngles.y, 0);
-        transform.rotation = newRotation;
+        _thirdPersonCamera.transform.parent.rotation = TargetRotation;
+        _thirdPersonCamera.transform.parent.parent.rotation = Quaternion.Euler(0, TargetRotation.eulerAngles.y, 0);
     }
 
     public void ResetTargetRotation(Quaternion target)
