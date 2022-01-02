@@ -78,8 +78,20 @@ public class GameController : Singleton<GameController>
     /// </summary>
     private IEnumerator WaitingForPlayers()
     {
+        while(!Input.GetKeyDown("h"))
+        {
+            foreach(PlayerController player in _players)
+            {
+                if (player.Team != eTeam.Spectator)
+                {
+                    player.SetTeam(eTeam.Spectator);
+                }
+            }
+            
+            yield return null;
+        }
         // When host presses start, or time is up
-        yield return new WaitForSeconds(1);
+        
         
         SetState(eGameState.PreRound);
     }
@@ -92,7 +104,7 @@ public class GameController : Singleton<GameController>
     private IEnumerator PreRound()
     {
         yield return new WaitForSeconds(1);
-        int numberOfSeekers = _players.Count / LobbyController.Instance.LobbyData.propsPerSeeker;
+        int numberOfSeekers = _players.Count;// / LobbyController.Instance.LobbyData.propsPerSeeker;
 
         List<PlayerController> availablePlayers = new List<PlayerController>(_players);
         List<PlayerController> seekers = new List<PlayerController>();

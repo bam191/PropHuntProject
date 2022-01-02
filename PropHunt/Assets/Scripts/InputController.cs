@@ -39,6 +39,7 @@ public class InputController : Singleton<InputController>
     public override void Initialize()
     {
         DontDestroyOnLoad(gameObject);
+        UnlockCursor();
         base.Initialize();
     }
 
