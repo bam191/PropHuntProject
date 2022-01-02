@@ -50,7 +50,7 @@ public class InputController : Singleton<InputController>
     public void SetPaused(bool isPaused)
     {
         _isPaused = isPaused;
-        
+
         if (isPaused)
         {
             UnlockCursor();

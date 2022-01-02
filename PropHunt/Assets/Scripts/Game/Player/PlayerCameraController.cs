@@ -73,19 +73,7 @@ public class PlayerCameraController : NetworkBehaviour
         _thirdPersonCamera.gameObject.SetActive(false);
         _freeCamera.gameObject.SetActive(false);
     }
-
-    public void LockCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    public void UnlockCursor()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
+    
     private bool CanMoveCamera()
     {
         InputController.eInputState inputState = InputController.Instance.InputState;
