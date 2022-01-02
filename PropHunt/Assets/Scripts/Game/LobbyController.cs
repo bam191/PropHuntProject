@@ -99,6 +99,11 @@ public class LobbyController : Singleton<LobbyController>
         }        
     }
 
+    public ClientData GetClientData()
+    {
+        return _clientData;
+    }
+
     public void Disconnect()
     {
         _isHosting = false;

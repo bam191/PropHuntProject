@@ -1,18 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 public class PlayerController : NetworkBehaviour
 {
     [SerializeField] private GameObject _localPlayer;
-    [SerializeField] private GameObject _serverPlayer;
+    [SerializeField] private GameObject _localFreeCam;
+    [SerializeField] private GameObject _localProp;
 
-    private PlayerModelController _playerModelController;
+    [SerializeField] private GameObject _serverPlayer;
+    [SerializeField] private GameObject _serverFreeCam;
+    [SerializeField] private GameObject _serverProp;
+
     private PlayerAnimationController _playerAnimationController;
     private PlayerCameraController _playerCameraController;
     private PlayerWeaponController _playerWeaponController;
+    private NameplateController _nameplateController;
 
     public NetworkVariable<bool> _requestCrouch;
     public NetworkVariable<Vector3> _requestedPosition;
@@ -22,37 +28,72 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<int> _kills = new NetworkVariable<int>(0);
     public NetworkVariable<int> _deaths = new NetworkVariable<int>(0);
 
-    public NetworkVariable<eTeam> team;
+    public NetworkVariable<eTeam> _team;
+
+    private ClientData _clientData;
+    public NetworkVariable<FixedString128Bytes> _userName;
+
+    public eTeam Team
+    {
+        get
+        {
+            return _team.Value;
+        }
+    }
 
     private void Awake()
     {
-        _playerModelController = GetComponentInChildren<PlayerModelController>();
         _playerAnimationController = GetComponentInChildren<PlayerAnimationController>();
         _playerCameraController = GetComponentInChildren<PlayerCameraController>();
         _playerWeaponController = GetComponentInChildren<PlayerWeaponController>();
+        _nameplateController = GetComponentInChildren<NameplateController>();
     }
 
     private void Start()
     {
         GameController.Instance.RegisterPlayer(this);
+        _clientData = LobbyController.Instance.GetClientData();
+        _userName.OnValueChanged += UpdateUserName;
+        _team.OnValueChanged += UpdateTeam;
 
         if (IsLocalPlayer)
         {
             _localPlayer.SetActive(true);
+            _localFreeCam.SetActive(false);
+            _localProp.SetActive(false);
+
             _serverPlayer.SetActive(false);
+            _serverFreeCam.SetActive(false);
+            _serverProp.SetActive(false);
+
+            SetPlayerNameServerRPC((FixedString128Bytes)_clientData.Username);
         }
         else
         {
             _localPlayer.SetActive(false);
+            _localFreeCam.SetActive(false);
+            _localProp.SetActive(false);
+
             _serverPlayer.SetActive(true);
+            _serverFreeCam.SetActive(false);
+            _serverProp.SetActive(false);
         }
+    }
+
+    public void UpdateUserName(FixedString128Bytes previousValue, FixedString128Bytes newValue)
+    {
+        _nameplateController.SetName(newValue.ToString());
     }
 
     public void SetTeam(eTeam team)
     {
-        this.team.Value = team;
+        _team.Value = team;
+        _playerCameraController.SetTeam(team);
+    }
 
-        _playerModelController.SetTeam(team);
+    public void UpdateTeam(eTeam previousValue, eTeam newValue)
+    {
+        _playerCameraController.SetTeam(newValue);
     }
 
     public void SetVelocity(Vector3 velocity)
@@ -71,6 +112,12 @@ public class PlayerController : NetworkBehaviour
     }
     
     #region  RPCs
+
+    [ServerRpc]
+    public void SetPlayerNameServerRPC(FixedString128Bytes username)
+    {
+        _userName.Value = username;
+    }
 
     [ServerRpc]
     public void MovementServerRpc(PlayerMovementInputs input)

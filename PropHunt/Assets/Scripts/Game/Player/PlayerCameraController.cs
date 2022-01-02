@@ -57,10 +57,47 @@ public class PlayerCameraController : NetworkBehaviour
     private float _recoilMultiplier;
     private float _recoilMultiplierDecay;
 
+    private const int PROP_LAYER = 7;
+    private const int HUNTER_LAYER = 6;
+    private const int HUNTER_TEAM_LAYER = 29;
+    private const int PROP_TEAM_LAYER = 30;
+    private const int DEFAULT_LAYER = 0;
+    private const int MAP_OBJECT_LAYER = 8;
+
+    private const int ANY_TEAM_CULLING_MASK = 1 << PROP_LAYER | 1 << HUNTER_LAYER | 1 << DEFAULT_LAYER | 1 << MAP_OBJECT_LAYER;
+    private const int PROP_TEAM_CULLING_MASK = ANY_TEAM_CULLING_MASK | 1 << PROP_TEAM_LAYER | 1 << HUNTER_TEAM_LAYER;
+    private const int HUNTER_TEAM_CULLING_MASK = ANY_TEAM_CULLING_MASK | 1 << HUNTER_TEAM_LAYER;
+    private const int SPECTATOR_CULLING_MASK = ANY_TEAM_CULLING_MASK | PROP_TEAM_CULLING_MASK | HUNTER_TEAM_CULLING_MASK;
+
+    public void SetTeam(eTeam team)
+    {
+        switch(team)
+        {
+            case eTeam.Any:
+                _firstPersonCamera.cullingMask = ANY_TEAM_CULLING_MASK;
+                _thirdPersonCamera.cullingMask = ANY_TEAM_CULLING_MASK;
+                _freeCamera.cullingMask = ANY_TEAM_CULLING_MASK;
+                break;
+            case eTeam.Hunters:
+                _firstPersonCamera.cullingMask = HUNTER_TEAM_CULLING_MASK;
+                _thirdPersonCamera.cullingMask = HUNTER_TEAM_CULLING_MASK;
+                _freeCamera.cullingMask = HUNTER_TEAM_CULLING_MASK;
+                break;
+            case eTeam.Props:
+                _firstPersonCamera.cullingMask = PROP_TEAM_CULLING_MASK;
+                _thirdPersonCamera.cullingMask = PROP_TEAM_CULLING_MASK;
+                _freeCamera.cullingMask = PROP_TEAM_CULLING_MASK;
+                break;
+            case eTeam.Spectator:
+                _firstPersonCamera.cullingMask = SPECTATOR_CULLING_MASK;
+                _thirdPersonCamera.cullingMask = SPECTATOR_CULLING_MASK;
+                _freeCamera.cullingMask = SPECTATOR_CULLING_MASK;
+                break;
+        }
+    }
+
     private void Awake()
     {
-        LockCursor();
-
         TargetRotation = transform.rotation;
     }
 
@@ -72,22 +109,19 @@ public class PlayerCameraController : NetworkBehaviour
         _thirdPersonCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
         _freeCamera.fieldOfView = OptionsPreferencesManager.GetCameraFOV();
 
+        if (!IsLocalPlayer)
+        {
+            _firstPersonCamera.gameObject.SetActive(false);
+        }
+        else
+        {
+            LookAtController.Instance.SetActiveCamera(_firstPersonCamera.gameObject);
+        }
+
         _thirdPersonCamera.gameObject.SetActive(false);
         _freeCamera.gameObject.SetActive(false);
     }
-
-    public void LockCursor()
-    {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
-    }
-
-    public void UnlockCursor()
-    {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
+    
     private bool CanMoveCamera()
     {
         InputController.eInputState inputState = InputController.Instance.InputState;

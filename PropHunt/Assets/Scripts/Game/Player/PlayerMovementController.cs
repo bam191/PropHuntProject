@@ -48,7 +48,7 @@ public class PlayerMovementController : NetworkBehaviour
         }
 
         SetGrounded();
-        CheckCrouch();
+        //CheckCrouch();
 
         ApplyGravity();
 

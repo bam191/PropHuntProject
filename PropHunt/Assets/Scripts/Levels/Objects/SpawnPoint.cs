@@ -6,7 +6,8 @@ public enum eTeam
 {
     Any,
     Props,
-    Hunters
+    Hunters,
+    Spectator
 }
 
 public class SpawnPoint : LevelObject
