@@ -50,6 +50,28 @@ public class InputController : Singleton<InputController>
     public void SetPaused(bool isPaused)
     {
         _isPaused = isPaused;
+        
+        if (isPaused)
+        {
+            UnlockCursor();
+        }
+        else
+        {
+            LockCursor();
+        }
     }
+
+    public void LockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+
+    public void UnlockCursor()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
 }
 

@@ -59,8 +59,6 @@ public class PlayerCameraController : NetworkBehaviour
 
     private void Awake()
     {
-        LockCursor();
-
         TargetRotation = transform.rotation;
     }
 
