@@ -9,7 +9,7 @@ public class PlayerAnimationController : NetworkBehaviour
     private const string VERTICAL_AIM_KEY = "VerticalAim";
     private const string FORWARD_SPEED_KEY = "ForwardSpeed";
     private const string RIGHT_SPEED_KEY = "RightSpeed";
-    private const string FIRST_PERSON_KEY = "FirstPerson";
+    private const string FIRST_PERSON_KEY = "IsFirstPerson";
     private const string RIFLE_KEY = "HoldingRifle";
     private const string PISTOL_KEY = "HoldingPistol";
 
@@ -30,7 +30,7 @@ public class PlayerAnimationController : NetworkBehaviour
     private Vector3 _velocity = Vector3.zero;
     private float _forwardSpeed = 0f;
     private float _rightSpeed = 0f;
-    private bool _isHoldingRifle = false;
+    private bool _isHoldingRifle = true;
 
     public void UpdateLastPosition(Vector3 lastPosition)
     {
@@ -39,12 +39,10 @@ public class PlayerAnimationController : NetworkBehaviour
 
     private void Start()
     {
-        if (IsLocalPlayer)
-        {
-            _localHunterAnimator.SetBool(FIRST_PERSON_KEY, true);
-        }
-
         _serverHunterAnimator.SetBool(FIRST_PERSON_KEY, false);
+
+        _localHunterAnimator.SetBool(FIRST_PERSON_KEY, true);
+        _localHunterAnimator.SetLayerWeight(_localHunterAnimator.GetLayerIndex("VerticalAim"), 0);
     }
 
     private void Update()
@@ -82,6 +80,7 @@ public class PlayerAnimationController : NetworkBehaviour
             _localHunterAnimator.SetBool(RIFLE_KEY, _isHoldingRifle);
             _localHunterAnimator.SetBool(PISTOL_KEY, !_isHoldingRifle);
             _localHunterAnimator.SetFloat(VERTICAL_AIM_KEY, 0.5f);
+            _localHunterAnimator.SetLayerWeight(_localHunterAnimator.GetLayerIndex("VerticalAim"), 0);
         }
         else
         {
@@ -111,7 +110,7 @@ public class PlayerAnimationController : NetworkBehaviour
                 break;
             case eGunType.Pistol:
             case eGunType.None:
-                _isHoldingRifle = false;
+                _isHoldingRifle = true;
                 break;
         }
     }
